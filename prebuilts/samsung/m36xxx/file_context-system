@@ -1,0 +1,4 @@
+sams/ u:object_r:rootfs:s0
+/system u:object_r:system_file:s0
+/system/lib64 u:object_r:system_lib_file:s0
+/system/lib64/libPortraitSolution\.camera\.samsung\.so u:object_r:system_lib_file:s0
