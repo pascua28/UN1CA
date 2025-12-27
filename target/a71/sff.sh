@@ -25,4 +25,7 @@ SEC_FLOATING_FEATURE_LCD_CONFIG_HFR_SUPPORTED_REFRESH_RATE_NS=
 SEC_FLOATING_FEATURE_CAMERA_CONFIG_VENDOR_LIB_INFO=image_codec.samsung.v1,beauty.samsung.v4,face_landmark.arcsoft.v2_1,facial_attribute.samsung.v1,swuwdc.arcsoft.v1,event_detection.samsung.v2,food.samsung.v1,selfie_correction.samsung.v1,dual_bokeh.samsung.v1,single_bokeh.samsung.v2,image_enhance.arcsoft.v1,mfhdr.arcsoft.v1,llhdr.arcsoft.v1,scene_detection.samsung.v1,smart_scan.samsung.v2,human_tracking.arcsoft.v2_1,localtm.samsung.v1_1
 
 # Samsung Gallery app
-SEC_FLOATING_FEATURE_GALLERY_CONFIG_IMAGE_TAGGER_VERSION=V448
+SEC_FLOATING_FEATURE_GALLERY_CONFIG_IMAGE_TAGGER_VERSION=V701
+
+# Always show remaster button in Gallery
+SEC_FLOATING_FEATURE_SAIV_CONFIG_AI_REVITAL_VERSION=1.7,1
