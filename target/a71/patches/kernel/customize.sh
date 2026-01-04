@@ -1,4 +1,4 @@
-KERNEL_REPO="https://github.com/pascua28/android_kernel_samsung_sm7150/releases/download/upstream"
+KERNEL_REPO="https://github.com/UN1CA/kernel_samsung_sm7150/releases/latest/download"
 
 LOG "- Downloading Paradigm kernel"
 [ -f "$WORK_DIR/kernel/boot.img" ] && rm -f "$WORK_DIR/kernel/boot.img"
