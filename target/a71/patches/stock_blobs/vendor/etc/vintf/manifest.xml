@@ -26,7 +26,7 @@
         radio_manifest_ds.xml
         manifest_chip.xml
 -->
-<manifest version="2.0" type="device" target-level="4">
+<manifest version="2.0" type="device" target-level="5">
     <hal format="hidl">
         <name>android.hardware.audio</name>
         <transport>hwbinder</transport>
@@ -86,16 +86,6 @@
             <instance>legacy/0</instance>
         </interface>
         <fqname>@2.6::ICameraProvider/legacy/0</fqname>
-    </hal>
-    <hal format="hidl">
-        <name>android.hardware.configstore</name>
-        <transport>hwbinder</transport>
-        <version>1.1</version>
-        <interface>
-            <name>ISurfaceFlingerConfigs</name>
-            <instance>default</instance>
-        </interface>
-        <fqname>@1.1::ISurfaceFlingerConfigs/default</fqname>
     </hal>
     <hal format="hidl" override="true">
         <name>android.hardware.gatekeeper</name>
@@ -453,13 +443,11 @@
         <name>vendor.samsung.hardware.biometrics.face</name>
         <transport>hwbinder</transport>
         <version>2.0</version>
-        <version>3.0</version>
         <interface>
             <name>ISehBiometricsFace</name>
             <instance>default</instance>
         </interface>
         <fqname>@2.0::ISehBiometricsFace/default</fqname>
-        <fqname>@3.0::ISehBiometricsFace/default</fqname>
     </hal>
     <hal format="hidl">
         <name>vendor.samsung.hardware.biometrics.fingerprint</name>
@@ -675,4 +663,5 @@
     <sepolicy>
         <version>30.0</version>
     </sepolicy>
+    <kernel target-level="5"/>
 </manifest>
