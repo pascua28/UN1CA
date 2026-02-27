@@ -1,1 +1,7 @@
 persist.log.tag.HeatmapThread=S
+
+# Disable sdcardfs and switch to fuse passthrough
+external_storage.projid.enabled=1
+external_storage.casefold.enabled=1
+external_storage.sdcardfs.enabled=0
+persist.sys.fuse.passthrough.enable=true
