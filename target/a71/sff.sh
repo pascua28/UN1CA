@@ -26,3 +26,6 @@ SEC_FLOATING_FEATURE_CAMERA_CONFIG_VENDOR_LIB_INFO=image_codec.samsung.v1,beauty
 
 # Always show remaster button in Gallery
 SEC_FLOATING_FEATURE_SAIV_CONFIG_AI_REVITAL_VERSION=1.7,1
+
+# Enable extra brightness feature
+SEC_FLOATING_FEATURE_LCD_SUPPORT_EXTRA_BRIGHTNESS=TRUE
