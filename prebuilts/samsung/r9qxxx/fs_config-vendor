@@ -1,0 +1,17 @@
+ 0 2000 755 capabilities=0x0
+vendor/bin 0 2000 751 capabilities=0x0
+vendor/bin/hw 0 2000 751 capabilities=0x0
+vendor/bin/hw/rild 0 2000 755 capabilities=0x0
+vendor/lib 0 2000 755 capabilities=0x0
+vendor/lib64 0 2000 755 capabilities=0x0
+vendor/lib/libsecril-client.so 0 0 644 capabilities=0x0
+vendor/lib/libsec_semRil.so 0 0 644 capabilities=0x0
+vendor/lib/libsemnativecarrierfeature.so 0 0 644 capabilities=0x0
+vendor/lib64/libril_sem.so 0 0 644 capabilities=0x0
+vendor/lib64/librilutils.so 0 0 644 capabilities=0x0
+vendor/lib64/libsec-ril.so 0 0 644 capabilities=0x0
+vendor/lib64/libsecril-client.so 0 0 644 capabilities=0x0
+vendor/lib64/libsec_semRil.so 0 0 644 capabilities=0x0
+vendor/lib64/libsemnativecarrierfeature.so 0 0 644 capabilities=0x0
+vendor/lib64/libVendorSemDataProps.so 0 0 644 capabilities=0x0
+vendor/lib64/libVendorSemTelephonyProps.so 0 0 644 capabilities=0x0
