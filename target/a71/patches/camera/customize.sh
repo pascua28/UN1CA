@@ -2,11 +2,6 @@ LOG_STEP_IN "- Adding m36xxx libPortraitSolution"
 ADD_TO_WORK_DIR "m36xxx" "system" "system/lib64/libPortraitSolution.camera.samsung.so" 0 0 644 "u:object_r:system_lib_file:s0"
 LOG_STEP_OUT
 
-if ! grep -q "Camera End" "$WORK_DIR/vendor/ueventd.rc"; then
-    echo "" >> "$WORK_DIR/vendor/ueventd.rc"
-    cat "$SRC_DIR/target/a71/patches/camera/ueventd" >> "$WORK_DIR/vendor/ueventd.rc"
-fi
-
 LOG_STEP_IN "- Replacing camera blobs"
 BLOBS_LIST="
 system/lib64/libAEBHDR_wrapper.camera.samsung.so
@@ -48,9 +43,8 @@ system/lib64/libsuperresolutionraw_wrapper_v2.camera.samsung.so
 system/lib64/libtensorflowLite2_11_0_dynamic_camera.so
 system/lib64/libtflite2.myfilters.camera.samsung.so
 "
-for blob in $BLOBS_LIST
-do
-    DELETE_FROM_WORK_DIR "system" "$blob"
+for i in $BLOBS_LIST; do
+    DELETE_FROM_WORK_DIR "system" "$i"
 done
 
 BLOBS_LIST="
@@ -86,8 +80,7 @@ system/lib64/libtensorflowlite_inference_api.myfilter.camera.samsung.so
 system/lib64/libMyFilter.camera.samsung.so
 system/lib64/libtflite2.myfilters.camera.samsung.so
 "
-for blob in $BLOBS_LIST
-do
-    ADD_TO_WORK_DIR "a73xqxx" "system" "$blob" 0 0 644 "u:object_r:system_lib_file:s0"
+for i in $BLOBS_LIST; do
+    ADD_TO_WORK_DIR "a73xqxx" "system" "$i" 0 0 644 "u:object_r:system_lib_file:s0"
 done
 LOG_STEP_OUT
