@@ -2,10 +2,8 @@ LOG_STEP_IN "- Adding m36xxx libPortraitSolution"
 ADD_TO_WORK_DIR "m36xxx" "system" "system/lib64/libPortraitSolution.camera.samsung.so" 0 0 644 "u:object_r:system_lib_file:s0"
 LOG_STEP_OUT
 
-{
-    echo
-    cat "$MODPATH/ueventd"
-} >> "$WORK_DIR/vendor/ueventd.rc"
+EVAL "echo \"\" >> \"$WORK_DIR/vendor/ueventd.rc\""
+EVAL "cat \"$SRC_DIR/target/a71/patches/camera/ueventd\" >> \"$WORK_DIR/vendor/ueventd.rc\""
 
 LOG_STEP_IN "- Replacing camera blobs"
 BLOBS_LIST="
@@ -80,8 +78,7 @@ system/lib64/libtensorflowLite.myfilter.camera.samsung.so
 system/lib64/libtensorflowlite_inference_api.myfilter.camera.samsung.so
 system/lib64/libMyFilter.camera.samsung.so
 system/lib64/libtflite2.myfilters.camera.samsung.so"
-for i in $BLOBS_LIST
-do
+for i in $BLOBS_LIST; do
     ADD_TO_WORK_DIR "a73xqxx" "system" "$i" 0 0 644 "u:object_r:system_lib_file:s0"
 done
 LOG_STEP_OUT
