@@ -23,8 +23,8 @@ ADD_TO_WORK_DIR "a73xqxx" "vendor" "etc/midas"
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Fixing MIDAS model detection"
-sed -i "s/a73xq/a71/g" "$WORK_DIR/vendor/etc/midas/midas_config.json"
-sed -i "s/ro.product.device/ro.product.vendor.device/g" "$WORK_DIR/vendor/etc/midas/midas_config.json"
+EVAL "sed -i 's/a73xq/a71/g' \"$WORK_DIR/vendor/etc/midas/midas_config.json\""
+EVAL "sed -i 's/ro.product.device/ro.product.vendor.device/g' \"$WORK_DIR/vendor/etc/midas/midas_config.json\""
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Adding 32-bit WFD blobs"
@@ -65,7 +65,7 @@ ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/lib64/libsamsungSoundbooster
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Fixing RIL"
-sed -i "s/1.4::IRadio/1.5::IRadio/g" "$WORK_DIR/vendor/etc/vintf/manifest.xml"
+EVAL "sed -i 's/1.4::IRadio/1.5::IRadio/g' \"$WORK_DIR/vendor/etc/vintf/manifest.xml\""
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Adding stock rscmgr.rc"
