@@ -64,7 +64,7 @@ ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/lib64/lib_SoundBooster_ver10
 ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/lib64/libsamsungSoundbooster_plus_legacy.so" 0 0 644 "u:object_r:system_lib_file:s0"
 LOG_STEP_OUT
 
-LOG_STEP_IN "- Fixing RIL"
+LOG_STEP_IN "- Replacing every occurrence of \"1.4::IRadio\" with \"1.5::IRadio\" in /vendor/etc/vintf/manifest.xml"
 EVAL "sed -i 's/1.4::IRadio/1.5::IRadio/g' \"$WORK_DIR/vendor/etc/vintf/manifest.xml\""
 LOG_STEP_OUT
 
