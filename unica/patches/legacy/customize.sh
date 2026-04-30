@@ -680,6 +680,29 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     fi
 fi
 
+# Heatmap (pre-API 36)
+# - Kernel drivers are samsung,sec_auth_sle956681 or samsung,sec_auth_ds28e30
+# - Do not check for SDK version because even some native devices do not support it
+VBOOT_MISSING=true
+
+if [ -f "$WORK_DIR/kernel/vendor_boot.img" ]; then
+    # Check for GKI devices
+    EXTRACT_KERNEL_MODULES
+    if grep -q "samsung,sec_auth" "$TMP_DIR/out/vendor_ramdisk"*; then
+        VBOOT_MISSING=false
+    fi
+fi
+
+if $VBOOT_MISSING; then
+    PATCHED=true
+    DELETE_FROM_WORK_DIR "system" "system/bin/heatmap"
+    DELETE_FROM_WORK_DIR "system" "system/etc/init/init.sec-heatmap.rc"
+    DELETE_FROM_WORK_DIR "system" "system/lib64/libectcore.so"
+    DELETE_FROM_WORK_DIR "system" "system/lib64/libparam_A55_250328.so"
+fi
+
+unset VBOOT_MISSING
+
 if ! $PATCHED; then
     LOG "\033[0;33m! Nothing to do\033[0m"
 fi
