@@ -1,0 +1,4 @@
+id=encryption
+name=Metadata encryption support
+author=ata-kaner
+description=Applies FBE V2 and Metadata encryption support

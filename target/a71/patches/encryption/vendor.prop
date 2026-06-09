@@ -1,0 +1,7 @@
+# Force enable V2 encryption for shipping API 29
+ro.crypto.volume.options=::v2
+ro.crypto.allow_encrypt_override=
+ro.crypto.volume.options=::v2
+ro.crypto.metadata_init_delete_all_keys.enabled=true
+ro.crypto.dm_default_key.options_format.version=2
+ro.crypto.volume.metadata.method=dm-default-key
