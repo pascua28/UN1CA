@@ -68,6 +68,25 @@ LOG_STEP_IN "- Replacing every occurrence of \"1.4::IRadio\" with \"1.5::IRadio\
 EVAL "sed -i 's/1.4::IRadio/1.5::IRadio/g' \"$WORK_DIR/vendor/etc/vintf/manifest.xml\""
 LOG_STEP_OUT
 
+LOG_STEP_IN "- Updating RIL"
+DELETE_FROM_WORK_DIR "vendor" "lib64/libqmiservices-ext.so"
+DELETE_FROM_WORK_DIR "vendor" "lib64/libqmiservices-sem-ext.so"
+DELETE_FROM_WORK_DIR "vendor" "lib64/libSemDataProps.so"
+DELETE_FROM_WORK_DIR "vendor" "lib64/libSemTelephonyProps.so"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "bin/hw/rild" 0 2000 755 "u:object_r:rild_exec:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib/libsemnativecarrierfeature.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib/libsecril-client.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib/libsec_semRil.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libril_sem.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/librilutils.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libsec-ril.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libsec_semRil.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libsecril-client.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libsemnativecarrierfeature.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libVendorSemDataProps.so" 0 0 644 "u:object_r:vendor_file:s0"
+ADD_TO_WORK_DIR "r9qxxx" "vendor" "lib64/libVendorSemTelephonyProps.so" 0 0 644 "u:object_r:vendor_file:s0"
+LOG_STEP_OUT
+
 LOG_STEP_IN "- Adding stock rscmgr.rc"
 ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/init/rscmgr.rc" 0 0 644 "u:object_r:system_file:s0"
 LOG_STEP_OUT
