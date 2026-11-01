@@ -595,12 +595,12 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             "CLOUDY_WORK_MODE" \
             "1"
         SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$8.smali" "replace" \
+            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$11.smali" "replace" \
             "handleMessage(Landroid/os/Message;)V" \
             "SUNNY_WORK_MODE" \
             "0"
         SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$8.smali" "replace" \
+            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$11.smali" "replace" \
             "handleMessage(Landroid/os/Message;)V" \
             "RAINY_RESTRICT_MODE" \
             "2"
