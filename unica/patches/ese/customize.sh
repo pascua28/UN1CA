@@ -90,8 +90,7 @@ if [[ "$SOURCE_SECURITY_CONFIG_ESE_CHIP_VENDOR" != "none" ]] && [[ "$SOURCE_SECU
     fi
     if [[ "$SOURCE_SECURITY_CONFIG_ESE_COS_NAME" != "$TARGET_SECURITY_CONFIG_ESE_COS_NAME" ]]; then
         SMALI_PATCH "system" "system/app/SecureElement/SecureElement.apk" \
-            "smali/com/android/se/internal/UtilExtension.smali" "replace" \
-            "supportEseHal()Z" \
+            "smali/com/android/se/internal/UtilExtension.smali" "replaceall" \
             "$SOURCE_SECURITY_CONFIG_ESE_COS_NAME" \
             "${TARGET_SECURITY_CONFIG_ESE_COS_NAME//none/}"
     fi
