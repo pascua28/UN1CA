@@ -329,7 +329,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             ! grep -q -r "IQtiComposer" "$WORK_DIR/vendor/etc/vintf"; then
         PATCHED=true
         # [b.lt #0x729be8] -> [nop]
-        HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00712b03005400068052" "9f8a00711f2003d500068052"
+        HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00710b020054e1d8ffb0" "9f8a00711f2003d5e1d8ffb0"
     fi
 fi
 
