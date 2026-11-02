@@ -1,0 +1,4 @@
+id=selinux
+name=Legacy selinux
+author=pascua28
+description=Adds legacy selinux mapping
