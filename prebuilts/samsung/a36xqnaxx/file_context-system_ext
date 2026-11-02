@@ -1,0 +1,4 @@
+/system_ext u:object_r:system_file:s0
+/system_ext/priv-app u:object_r:system_file:s0
+/system_ext/priv-app/SystemUI u:object_r:system_file:s0
+/system_ext/priv-app/SystemUI/SystemUI\.apk u:object_r:system_file:s0
