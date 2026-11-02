@@ -1,6 +1,6 @@
-From 758377ecd20feb0587a67b7e3ac0ec4eb2c934ff Mon Sep 17 00:00:00 2001
+From f768e2f6ef87f2af5acacc1cc4794a83894e1a7b Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Thu, 9 Oct 2025 23:41:30 +0200
+Date: Mon, 2 Nov 2026 15:54:52 +0800
 Subject: [PATCH] Disable dual speaker support
 
 ---
@@ -8,10 +8,10 @@ Subject: [PATCH] Disable dual speaker support
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/smali/com/android/server/audio/AudioService.smali b/smali/com/android/server/audio/AudioService.smali
-index 3c264d433..f4f4cc5b2 100644
+index 62998f16..65838341 100644
 --- a/smali/com/android/server/audio/AudioService.smali
 +++ b/smali/com/android/server/audio/AudioService.smali
-@@ -7815,9 +7815,7 @@
+@@ -7549,9 +7549,7 @@
  
      invoke-virtual {p1, v0}, Ljava/io/PrintWriter;->print(Ljava/lang/String;)V
  
@@ -22,7 +22,7 @@ index 3c264d433..f4f4cc5b2 100644
  
      const-string v2, "  mVolumeLimitOn="
  
-@@ -8078,6 +8076,8 @@
+@@ -7814,6 +7812,8 @@
  
      invoke-virtual {p1, v3}, Ljava/io/PrintWriter;->println(Ljava/lang/String;)V
  
@@ -32,5 +32,5 @@ index 3c264d433..f4f4cc5b2 100644
  
      move-result v3
 -- 
-2.51.0
+2.54.0
 
