@@ -172,8 +172,8 @@ if ! $SOURCE_COMMON_SUPPORT_DYN_RESOLUTION_CONTROL; then
         if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             if [[ "$TARGET_OS_SINGLE_SYSTEM_IMAGE" == "qssi" ]] && \
                     ! grep -q -r "IQtiComposer" "$WORK_DIR/vendor/etc/vintf"; then
-                # [b.lt #0x72b2b0] -> [nop]
-                HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00712b03005400068052" "9f8a00711f2003d500068052"
+                # [b.lt #0x670c68] -> [nop]
+                HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00710b02005401d9ff90" "9f8a00711f2003d501d9ff90"
             fi
         fi
         ADD_TO_WORK_DIR "b0qxxx" "system" "system/media/battery_error.spi" 0 0 644 "u:object_r:system_file:s0"
