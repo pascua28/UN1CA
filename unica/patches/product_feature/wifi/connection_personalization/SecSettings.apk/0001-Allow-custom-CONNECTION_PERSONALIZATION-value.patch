@@ -1,26 +1,39 @@
-From 9482719b288ecd10e1135459d6bc4fa03cff28b8 Mon Sep 17 00:00:00 2001
+From 6b2eeacb6b46ee04a09bb691cecfc7189acc8db9 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Mon, 8 Sep 2025 22:23:09 +0200
+Date: Mon, 2 Nov 2026 19:21:36 +0800
 Subject: [PATCH] Allow custom CONNECTION_PERSONALIZATION value
 
-UN1CA: this patch is not complete! Please check unica/patches/product_feature/customize.sh for more info.
 ---
- .../android/settings/wifi/develop/btm/BtmController.smali       | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../android/settings/wifi/develop/ApePreferenceController.smali | 2 +-
+ .../settings/wifi/develop/compatibility/btm/BtmController.smali | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali b/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-index 35f1f2740..3f9a8166d 100644
---- a/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-+++ b/smali_classes3/com/samsung/android/settings/wifi/develop/btm/BtmController.smali
-@@ -17,7 +17,7 @@
+diff --git a/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali b/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
+index da844d19..173811c2 100644
+--- a/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
++++ b/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
+@@ -6,7 +6,7 @@
+ # static fields
+ .field private static final SETTINGS_DEVELOPER_APE:Ljava/lang/String; = "sem_wifi_ape_enabled_labs"
+ 
+-.field private static final SUPPORT_APE_SERVICE:Z = true
++.field private static final SUPPORT_APE_SERVICE:Z = false
+ 
+ .field private static final TAG:Ljava/lang/String; = "ConfigureWifiSettings.Ape"
+ 
+diff --git a/smali_classes4/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali b/smali_classes4/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
+index 659cb7c6..bf7e9c52 100644
+--- a/smali_classes4/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
++++ b/smali_classes4/com/samsung/android/settings/wifi/develop/compatibility/btm/BtmController.smali
+@@ -25,7 +25,7 @@
  .method public getAvailabilityStatus()I
      .locals 1
  
--    const-string p0, "1"
+-    const-string p0, "2"
 +    const-string p0, "CONFIG_CONNECTION_PERSONALIZATION"
  
      invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
 -- 
-2.51.1
+2.54.0
 
