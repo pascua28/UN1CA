@@ -1,4 +1,4 @@
-From 9675fb03d32168bfe9625b6dd01c1066569cc471 Mon Sep 17 00:00:00 2001
+From ca8d8ef962fcab4b284a04822d44db4797790a8f Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
 Date: Mon, 8 Sep 2025 22:25:57 +0200
 Subject: [PATCH] Add optical FOD support
@@ -6,40 +6,40 @@ Subject: [PATCH] Add optical FOD support
 ---
  .../BiometricsDisclaimerActivity.smali        |   2 +-
  .../SuwBiometricsDisclaimerActivity.smali     |   2 +-
- .../fingerprint/FingerprintSettings.smali     | 577 ++++++++++--------
- .../fingerprint/RegisterFingerprint.smali     | 330 +++++++---
- 4 files changed, 577 insertions(+), 334 deletions(-)
+ .../fingerprint/FingerprintSettings.smali     | 561 ++++++++++--------
+ .../fingerprint/RegisterFingerprint.smali     | 329 +++++++---
+ 4 files changed, 562 insertions(+), 332 deletions(-)
 
-diff --git a/smali_classes4/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali b/smali_classes4/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
-index a7bdd3587..09b7deea9 100644
---- a/smali_classes4/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
-+++ b/smali_classes4/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
-@@ -1475,7 +1475,7 @@
+diff --git a/smali_classes5/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali b/smali_classes5/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
+index b1a9817f..e95e8e2b 100644
+--- a/smali_classes5/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
++++ b/smali_classes5/com/samsung/android/settings/biometrics/BiometricsDisclaimerActivity.smali
+@@ -1528,7 +1528,7 @@
  
      invoke-virtual {v0, v3}, Landroid/widget/TextView;->setText(I)V
  
--    const v0, 0x7f1425ac
-+    const v0, 0x7f1425aa
+-    const v0, 0x7f152765
++    const v0, 0x7f152763
  
      invoke-virtual {v2, v0}, Landroid/widget/TextView;->setText(I)V
  
-diff --git a/smali_classes4/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali b/smali_classes4/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
-index b7a242cfe..9d678f44c 100644
---- a/smali_classes4/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
-+++ b/smali_classes4/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
-@@ -608,7 +608,7 @@
+diff --git a/smali_classes5/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali b/smali_classes5/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
+index e4b98024..498d8dd6 100644
+--- a/smali_classes5/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
++++ b/smali_classes5/com/samsung/android/settings/biometrics/SuwBiometricsDisclaimerActivity.smali
+@@ -598,7 +598,7 @@
  
      invoke-virtual {v1, v6}, Landroid/widget/TextView;->setText(I)V
  
--    const v1, 0x7f1425ac
-+    const v1, 0x7f1425aa
+-    const v1, 0x7f152765
++    const v1, 0x7f152763
  
      invoke-virtual {v5, v1}, Landroid/widget/TextView;->setText(I)V
  
-diff --git a/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali b/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
-index 6c967cfe5..36e00e048 100644
---- a/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
-+++ b/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
+diff --git a/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali b/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
+index 86cd8aed..050e032c 100644
+--- a/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
++++ b/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/FingerprintSettings.smali
 @@ -73,10 +73,14 @@
  
  .field public mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
@@ -64,16 +64,7 @@ index 6c967cfe5..36e00e048 100644
      new-instance v0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings$1;
  
      invoke-direct {v0, p0}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings$1;-><init>(Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;)V
-@@ -2457,7 +2463,7 @@
- 
-     invoke-virtual {p0}, Ljava/lang/Exception;->printStackTrace()V
- 
--    goto/16 :goto_3
-+    goto/16 :goto_4
- 
-     :cond_6
-     const-string/jumbo v0, "set_screen_lock"
-@@ -2466,7 +2472,7 @@
+@@ -2505,7 +2511,7 @@
  
      move-result v0
  
@@ -82,7 +73,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
  
-@@ -2663,7 +2669,7 @@
+@@ -2702,7 +2708,7 @@
  
      move-result p1
  
@@ -91,7 +82,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getContext()Landroid/content/Context;
  
-@@ -2684,7 +2690,7 @@
+@@ -2723,7 +2729,7 @@
  
      move-result p1
  
@@ -100,7 +91,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
  
-@@ -2694,7 +2700,7 @@
+@@ -2733,7 +2739,7 @@
  
      move-result p1
  
@@ -109,7 +100,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
  
-@@ -2712,29 +2718,47 @@
+@@ -2751,29 +2757,47 @@
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
  
@@ -163,7 +154,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
  
-@@ -2748,24 +2772,24 @@
+@@ -2787,24 +2811,24 @@
  
      invoke-virtual {p0, p1}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setEnableScreenOffIcon(Z)V
  
@@ -195,7 +186,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
  
-@@ -2777,7 +2801,7 @@
+@@ -2816,7 +2840,7 @@
  
      move-result p2
  
@@ -204,7 +195,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
  
-@@ -2785,43 +2809,43 @@
+@@ -2824,43 +2848,43 @@
  
      move-result p2
  
@@ -260,7 +251,7 @@ index 6c967cfe5..36e00e048 100644
      const-string p1, "Launch the FingerprintLockSettings"
  
      invoke-static {v2, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
-@@ -2832,14 +2856,14 @@
+@@ -2871,14 +2895,14 @@
  
      return v7
  
@@ -277,7 +268,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
  
-@@ -2879,7 +2903,7 @@
+@@ -2918,7 +2942,7 @@
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
  
@@ -286,7 +277,7 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p2}, Ljava/lang/Boolean;->booleanValue()Z
  
-@@ -2889,10 +2913,10 @@
+@@ -2928,10 +2952,10 @@
  
      return v6
  
@@ -299,14 +290,12 @@ index 6c967cfe5..36e00e048 100644
  
      invoke-virtual {p2}, Ljava/lang/Boolean;->booleanValue()Z
  
-@@ -2900,18 +2924,18 @@
+@@ -2939,17 +2963,17 @@
  
      invoke-virtual {p0, p1}, Landroidx/preference/Preference;->setEnabled(Z)V
  
 -    :cond_1b
--    :goto_3
 +    :cond_1c
-+    :goto_4
      return v6
  
 -    :cond_1c
@@ -322,7 +311,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mStayOnLockScreen:Landroidx/preference/SwitchPreference;
  
-@@ -2951,14 +2975,14 @@
+@@ -2989,14 +3013,14 @@
  
      return v6
  
@@ -339,7 +328,7 @@ index 6c967cfe5..36e00e048 100644
  
      check-cast p2, Ljava/lang/String;
  
-@@ -3014,7 +3038,7 @@
+@@ -3042,7 +3066,7 @@
  
      return v6
  
@@ -348,7 +337,7 @@ index 6c967cfe5..36e00e048 100644
      const-string/jumbo v0, "screen_off_icon"
  
      invoke-virtual {v0, p1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
-@@ -3023,7 +3047,7 @@
+@@ -3051,7 +3075,7 @@
  
      const-string v1, "FpstFingerprintSettingsUtils"
  
@@ -357,7 +346,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIcon:Landroidx/preference/SwitchPreference;
  
-@@ -3059,14 +3083,14 @@
+@@ -3087,14 +3111,14 @@
  
      return v6
  
@@ -374,26 +363,26 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFastRecognition:Landroidx/preference/SwitchPreference;
  
-@@ -3092,14 +3116,14 @@
+@@ -3120,14 +3144,14 @@
  
      move-result p0
  
 -    if-eqz p0, :cond_20
 +    if-eqz p0, :cond_21
  
--    goto :goto_4
-+    goto :goto_5
+-    goto :goto_3
++    goto :goto_4
  
 -    :cond_20
 +    :cond_21
      const/4 v7, 0x3
  
--    :goto_4
-+    :goto_5
+-    :goto_3
++    :goto_4
      invoke-static {v7}, Ljava/lang/String;->valueOf(I)Ljava/lang/String;
  
      move-result-object p0
-@@ -3110,14 +3134,14 @@
+@@ -3138,14 +3162,14 @@
  
      return v6
  
@@ -410,7 +399,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
  
-@@ -3157,7 +3181,7 @@
+@@ -3185,7 +3209,7 @@
  
      return v6
  
@@ -419,7 +408,7 @@ index 6c967cfe5..36e00e048 100644
      new-instance p0, Ljava/lang/StringBuilder;
  
      const-string p2, "Unknown key:"
-@@ -3725,7 +3749,19 @@
+@@ -3764,7 +3788,19 @@
  
      move-result-object p1
  
@@ -440,1111 +429,7 @@ index 6c967cfe5..36e00e048 100644
  
      iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintCancel:Landroid/os/CancellationSignal;
  
-@@ -3894,7 +3930,7 @@
- 
-     const/4 v3, 0x0
- 
--    if-eqz v2, :cond_3d
-+    if-eqz v2, :cond_3f
- 
-     invoke-virtual {p0}, Landroidx/preference/PreferenceFragmentCompat;->getPreferenceScreen()Landroidx/preference/PreferenceScreen;
- 
-@@ -4197,11 +4233,11 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v10, :cond_e
-+    if-eqz v10, :cond_10
- 
-     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsSupportFpAlwaysOn:Z
- 
--    if-eqz v10, :cond_d
-+    if-eqz v10, :cond_f
- 
-     if-eqz v5, :cond_b
- 
-@@ -4209,19 +4245,41 @@
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
--    goto :goto_6
-+    goto :goto_8
- 
-     :cond_b
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
--    sget-boolean v8, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
-+    move-result-object v8
-+
-+    invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintScreenOffIconAod()Z
-+
-+    move-result v10
-+
-+    if-nez v10, :cond_c
-+
-+    invoke-static {v8}, Lcom/android/settings/Utils;->isDesktopStandaloneMode(Landroid/content/Context;)Z
-+
-+    move-result v8
-+
-+    if-eqz v8, :cond_c
-+
-+    iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
-+
-+    const v10, 0x7f142597
-+
-+    invoke-virtual {v8, v10}, Landroidx/preference/Preference;->setSummary(I)V
- 
-+    goto :goto_6
-+
-+    :cond_c
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
-     const v10, 0x7f142596
- 
-     invoke-virtual {v8, v10}, Landroidx/preference/Preference;->setSummary(I)V
- 
-+    :goto_6
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
-@@ -4240,7 +4298,7 @@
- 
-     invoke-virtual {v8, v10}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
- 
--    if-eqz v4, :cond_c
-+    if-eqz v4, :cond_e
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4252,30 +4310,48 @@
- 
-     move-result v8
- 
--    if-nez v8, :cond_c
-+    if-nez v8, :cond_e
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-+    move-result-object v8
-+
-+    invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintScreenOffIconAod()Z
-+
-+    move-result v10
-+
-+    if-nez v10, :cond_d
-+
-+    invoke-static {v8}, Lcom/android/settings/Utils;->isDesktopStandaloneMode(Landroid/content/Context;)Z
-+
-+    move-result v8
-+
-+    if-eqz v8, :cond_d
-+
-+    goto :goto_7
-+
-+    :cond_d
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v8, v0}, Landroidx/preference/Preference;->setEnabled(Z)V
- 
--    goto :goto_6
-+    goto :goto_8
- 
--    :cond_c
-+    :cond_e
-+    :goto_7
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v8, v3}, Landroidx/preference/Preference;->setEnabled(Z)V
- 
--    goto :goto_6
-+    goto :goto_8
- 
--    :cond_d
-+    :cond_f
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
- 
--    :cond_e
--    :goto_6
-+    :cond_10
-+    :goto_8
-     invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintAlwaysOnType()V
- 
-     const-string/jumbo v8, "set_always_on_type"
-@@ -4292,20 +4368,20 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mStayOnLockScreen:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v10, :cond_10
-+    if-eqz v10, :cond_12
- 
-     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
- 
--    if-nez v10, :cond_f
-+    if-nez v10, :cond_11
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getContext()Landroid/content/Context;
- 
--    :cond_f
-+    :cond_11
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mStayOnLockScreen:Landroidx/preference/SwitchPreference;
- 
--    :cond_10
-+    :cond_12
-     const-string/jumbo v8, "screen_off_icon_aod"
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4316,7 +4392,7 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
- 
--    if-eqz v10, :cond_15
-+    if-eqz v10, :cond_17
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4324,17 +4400,17 @@
- 
-     move-result v10
- 
--    if-eqz v10, :cond_14
-+    if-eqz v10, :cond_16
- 
--    if-eqz v5, :cond_11
-+    if-eqz v5, :cond_13
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
- 
--    goto/16 :goto_8
-+    goto/16 :goto_a
- 
--    :cond_11
-+    :cond_13
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-     move-result-object v8
-@@ -4431,7 +4507,7 @@
- 
-     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
- 
--    if-eqz v4, :cond_13
-+    if-eqz v4, :cond_15
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4443,11 +4519,11 @@
- 
-     move-result v8
- 
--    if-nez v8, :cond_13
-+    if-nez v8, :cond_15
- 
-     iget-boolean v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsSupportFpAlwaysOn:Z
- 
--    if-eqz v8, :cond_12
-+    if-eqz v8, :cond_14
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4459,28 +4535,28 @@
- 
-     move-result v8
- 
--    if-nez v8, :cond_12
-+    if-nez v8, :cond_14
- 
--    goto :goto_7
-+    goto :goto_9
- 
--    :cond_12
-+    :cond_14
-     invoke-virtual {p0, v0}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setEnableScreenOffIcon(Z)V
- 
--    goto :goto_8
-+    goto :goto_a
- 
--    :cond_13
--    :goto_7
-+    :cond_15
-+    :goto_9
-     invoke-virtual {p0, v3}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setEnableScreenOffIcon(Z)V
- 
--    goto :goto_8
-+    goto :goto_a
- 
--    :cond_14
-+    :cond_16
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
- 
--    :cond_15
--    :goto_8
-+    :cond_17
-+    :goto_a
-     const-string/jumbo v8, "screen_off_icon"
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4491,13 +4567,13 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIcon:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v10, :cond_16
-+    if-eqz v10, :cond_18
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIcon:Landroidx/preference/SwitchPreference;
- 
--    :cond_16
-+    :cond_18
-     const-string/jumbo v8, "show_fingerprint_icon"
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4508,13 +4584,13 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mShowFingerprintIcon:Landroidx/preference/SecPreferenceScreen;
- 
--    if-eqz v10, :cond_17
-+    if-eqz v10, :cond_19
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mShowFingerprintIcon:Landroidx/preference/SecPreferenceScreen;
- 
--    :cond_17
-+    :cond_19
-     const-string/jumbo v8, "support_web_signin"
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4525,7 +4601,7 @@
- 
-     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mWebSignIn:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v10, :cond_1c
-+    if-eqz v10, :cond_1e
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4537,7 +4613,7 @@
- 
-     move-result v10
- 
--    if-eqz v10, :cond_1b
-+    if-eqz v10, :cond_1d
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4547,19 +4623,19 @@
- 
-     move-result v10
- 
--    if-nez v10, :cond_1b
-+    if-nez v10, :cond_1d
- 
-     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
- 
--    if-nez v10, :cond_1b
-+    if-nez v10, :cond_1d
- 
-     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
- 
--    if-eqz v10, :cond_18
-+    if-eqz v10, :cond_1a
- 
--    goto :goto_b
-+    goto :goto_d
- 
--    :cond_18
-+    :cond_1a
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mWebSignIn:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
-@@ -4574,7 +4650,7 @@
- 
-     move-result v10
- 
--    if-nez v10, :cond_1a
-+    if-nez v10, :cond_1c
- 
-     invoke-virtual {p0}, Lcom/android/settings/SettingsPreferenceFragment;->getContentResolver()Landroid/content/ContentResolver;
- 
-@@ -4586,16 +4662,16 @@
- 
-     move-result v10
- 
--    if-eqz v10, :cond_19
-+    if-eqz v10, :cond_1b
- 
-     move v10, v0
- 
--    goto :goto_9
-+    goto :goto_b
- 
--    :cond_19
-+    :cond_1b
-     move v10, v3
- 
--    :goto_9
-+    :goto_b
-     new-instance v11, Ljava/lang/StringBuilder;
- 
-     const-string v12, "getFingerprintVerification :"
-@@ -4610,30 +4686,30 @@
- 
-     invoke-static {v1, v11}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
- 
--    goto :goto_a
-+    goto :goto_c
- 
--    :cond_1a
-+    :cond_1c
-     move v10, v3
- 
--    :goto_a
-+    :goto_c
-     invoke-virtual {v8, v10}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
- 
-     move v8, v0
- 
--    goto :goto_c
-+    goto :goto_e
- 
--    :cond_1b
--    :goto_b
-+    :cond_1d
-+    :goto_d
-     const-string/jumbo v10, "setFingerprintPreference : Remove Web Sign-In"
- 
-     invoke-static {v1, v10}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
--    :cond_1c
-+    :cond_1e
-     move v8, v3
- 
--    :goto_c
-+    :goto_e
-     const-string/jumbo v10, "support_samsung_account"
- 
-     invoke-virtual {p0, v10}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4644,7 +4720,7 @@
- 
-     iput-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v11, :cond_23
-+    if-eqz v11, :cond_25
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4656,7 +4732,7 @@
- 
-     move-result v11
- 
--    if-eqz v11, :cond_22
-+    if-eqz v11, :cond_24
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4666,7 +4742,7 @@
- 
-     move-result v11
- 
--    if-eqz v11, :cond_1d
-+    if-eqz v11, :cond_1f
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4676,30 +4752,30 @@
- 
-     move-result v11
- 
--    if-nez v11, :cond_22
-+    if-nez v11, :cond_24
- 
--    :cond_1d
-+    :cond_1f
-     invoke-static {}, Landroid/os/UserHandle;->myUserId()I
- 
-     move-result v11
- 
--    if-nez v11, :cond_22
-+    if-nez v11, :cond_24
- 
-     iget-boolean v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
- 
--    if-nez v11, :cond_22
-+    if-nez v11, :cond_24
- 
-     iget-boolean v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
- 
--    if-nez v11, :cond_22
-+    if-nez v11, :cond_24
- 
-     sget-boolean v11, Lcom/samsung/android/settings/Rune;->SUPPORT_DISABLE_ACCOUNTS_SETTINGS:Z
- 
--    if-eqz v11, :cond_1e
-+    if-eqz v11, :cond_20
- 
--    goto :goto_11
-+    goto :goto_13
- 
--    :cond_1e
-+    :cond_20
-     invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->getFingerprintSamsungAccountVerification()Z
- 
-     move-result v8
-@@ -4733,62 +4809,62 @@
-     :try_start_1
-     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccountContext:Landroidx/fragment/app/FragmentActivity;
- 
--    if-eqz v8, :cond_1f
-+    if-eqz v8, :cond_21
- 
--    if-eqz v10, :cond_1f
-+    if-eqz v10, :cond_21
- 
-     move v12, v0
- 
--    goto :goto_d
-+    goto :goto_f
- 
--    :cond_1f
-+    :cond_21
-     move v12, v3
- 
--    :goto_d
-+    :goto_f
-     invoke-static {v11, v12}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setUseFingerprintForSA(Landroidx/fragment/app/FragmentActivity;I)V
- 
-     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccountContext:Landroidx/fragment/app/FragmentActivity;
- 
--    if-eqz v8, :cond_20
-+    if-eqz v8, :cond_22
- 
--    if-eqz v10, :cond_20
-+    if-eqz v10, :cond_22
- 
-     move v12, v0
- 
--    goto :goto_e
-+    goto :goto_10
- 
--    :cond_20
-+    :cond_22
-     move v12, v3
- 
--    :goto_e
-+    :goto_10
-     invoke-static {v11, v12}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setFingerPrintOnSAConfirmed(Landroidx/fragment/app/FragmentActivity;I)V
- 
-     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v8, :cond_21
-+    if-eqz v8, :cond_23
- 
--    if-eqz v10, :cond_21
-+    if-eqz v10, :cond_23
- 
-     move v8, v0
- 
--    goto :goto_f
-+    goto :goto_11
- 
--    :cond_21
-+    :cond_23
-     move v8, v3
- 
--    :goto_f
-+    :goto_11
-     invoke-virtual {v11, v8}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
-     :try_end_1
-     .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_1
- 
--    goto :goto_10
-+    goto :goto_12
- 
-     :catch_1
-     move-exception v8
- 
-     invoke-virtual {v8}, Ljava/lang/Exception;->printStackTrace()V
- 
--    :goto_10
-+    :goto_12
-     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v8, v0}, Landroidx/preference/Preference;->setEnabled(Z)V
-@@ -4799,10 +4875,10 @@
- 
-     move v8, v0
- 
--    goto :goto_12
-+    goto :goto_14
- 
--    :cond_22
--    :goto_11
-+    :cond_24
-+    :goto_13
-     const-string/jumbo v11, "setFingerprintPreference : Remove Samsung Account"
- 
-     invoke-static {v1, v11}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
-@@ -4811,8 +4887,8 @@
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
- 
--    :cond_23
--    :goto_12
-+    :cond_25
-+    :goto_14
-     const-string v10, "fast_recognition"
- 
-     invoke-virtual {p0, v10}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4823,7 +4899,7 @@
- 
-     iput-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFastRecognition:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v11, :cond_24
-+    if-eqz v11, :cond_26
- 
-     invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFasterRecognition()V
- 
-@@ -4835,8 +4911,8 @@
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFastRecognition:Landroidx/preference/SwitchPreference;
- 
--    :cond_24
--    if-nez v8, :cond_25
-+    :cond_26
-+    if-nez v8, :cond_27
- 
-     const-string/jumbo v8, "setFingerprintPreference : No supported application"
- 
-@@ -4846,8 +4922,8 @@
- 
-     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
--    :cond_25
--    if-eq v2, v0, :cond_26
-+    :cond_27
-+    if-eq v2, v0, :cond_28
- 
-     const-string/jumbo v2, "setFingerprintPreference : SUW Remove reigster category"
- 
-@@ -4857,7 +4933,7 @@
- 
-     invoke-virtual {p0, v7}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
--    :cond_26
-+    :cond_28
-     const-string v2, "fingerprint_effect"
- 
-     invoke-virtual {p0, v2}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
-@@ -4868,9 +4944,9 @@
- 
-     iput-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
- 
--    if-eqz v7, :cond_2a
-+    if-eqz v7, :cond_2c
- 
--    if-nez v5, :cond_29
-+    if-nez v5, :cond_2b
- 
-     sget-boolean v2, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
- 
-@@ -4890,7 +4966,7 @@
- 
-     invoke-virtual {v2, v5}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
- 
--    if-eqz v4, :cond_28
-+    if-eqz v4, :cond_2a
- 
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-@@ -4902,32 +4978,32 @@
- 
-     move-result v2
- 
--    if-eqz v2, :cond_27
-+    if-eqz v2, :cond_29
- 
--    goto :goto_13
-+    goto :goto_15
- 
--    :cond_27
-+    :cond_29
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v2, v0}, Landroidx/preference/Preference;->setEnabled(Z)V
- 
--    goto :goto_14
-+    goto :goto_16
- 
--    :cond_28
--    :goto_13
-+    :cond_2a
-+    :goto_15
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
- 
-     invoke-virtual {v2, v3}, Landroidx/preference/Preference;->setEnabled(Z)V
- 
--    goto :goto_14
-+    goto :goto_16
- 
--    :cond_29
-+    :cond_2b
-     invoke-virtual {p0, v2}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
- 
--    :cond_2a
--    :goto_14
-+    :cond_2c
-+    :goto_16
-     sget-boolean v2, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
- 
-     const-string v2, "key_fingerprint_icon_and_animation_style"
-@@ -4936,11 +5012,11 @@
- 
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
--    if-eqz v2, :cond_2b
-+    if-eqz v2, :cond_2d
- 
-     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
--    :cond_2b
-+    :cond_2d
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
- 
-     iget v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mUserId:I
-@@ -4957,9 +5033,9 @@
- 
-     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
--    if-eqz v4, :cond_31
-+    if-eqz v4, :cond_33
- 
--    if-eqz v2, :cond_31
-+    if-eqz v2, :cond_33
- 
-     invoke-interface {v4}, Ljava/util/List;->size()I
- 
-@@ -4969,15 +5045,15 @@
- 
-     move v4, v3
- 
--    :goto_15
-+    :goto_17
-     iget v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
--    if-ge v4, v5, :cond_2d
-+    if-ge v4, v5, :cond_2f
- 
-     move v5, v4
- 
--    :goto_16
--    if-lez v5, :cond_2c
-+    :goto_18
-+    if-lez v5, :cond_2e
- 
-     iget-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
-@@ -5005,7 +5081,7 @@
- 
-     move-result v10
- 
--    if-le v7, v10, :cond_2c
-+    if-le v7, v10, :cond_2e
- 
-     iget-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
-@@ -5025,21 +5101,21 @@
- 
-     add-int/lit8 v5, v5, -0x1
- 
--    goto :goto_16
-+    goto :goto_18
- 
--    :cond_2c
-+    :cond_2e
-     add-int/2addr v4, v0
- 
--    goto :goto_15
-+    goto :goto_17
- 
--    :cond_2d
-+    :cond_2f
-     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
-     invoke-interface {v4}, Ljava/util/List;->size()I
- 
-     move-result v4
- 
--    if-eq v5, v4, :cond_2e
-+    if-eq v5, v4, :cond_30
- 
-     const-string v4, "addFingerprintItemPreferences : Sort Error"
- 
-@@ -5057,7 +5133,7 @@
- 
-     iput-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
--    if-eqz v4, :cond_2e
-+    if-eqz v4, :cond_30
- 
-     invoke-interface {v4}, Ljava/util/List;->size()I
- 
-@@ -5065,7 +5141,7 @@
- 
-     iput v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
--    :cond_2e
-+    :cond_30
-     new-instance v4, Ljava/lang/StringBuilder;
- 
-     const-string v5, "addFingerprintItemPreferences : mEnrolledFingerCount["
-@@ -5080,14 +5156,14 @@
- 
-     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
--    if-eqz v4, :cond_30
-+    if-eqz v4, :cond_32
- 
-     move v4, v3
- 
--    :goto_17
-+    :goto_19
-     iget v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
--    if-ge v4, v5, :cond_2f
-+    if-ge v4, v5, :cond_31
- 
-     iget-object v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
-@@ -5139,15 +5215,15 @@
- 
-     add-int/2addr v4, v0
- 
--    goto :goto_17
-+    goto :goto_19
- 
--    :cond_2f
-+    :cond_31
-     move v4, v3
- 
--    :goto_18
-+    :goto_1a
-     iget v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
--    if-ge v4, v5, :cond_32
-+    if-ge v4, v5, :cond_34
- 
-     iget-object v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
- 
-@@ -5225,26 +5301,26 @@
- 
-     add-int/2addr v4, v0
- 
--    goto :goto_18
-+    goto :goto_1a
- 
--    :cond_30
-+    :cond_32
-     iput v3, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
-     const-string v2, "addFingerprintItemPreferences : mFingerprintManager.getEnrolledFingerprints() return null 2"
- 
-     invoke-static {v1, v2}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
- 
--    goto :goto_19
-+    goto :goto_1b
- 
--    :cond_31
-+    :cond_33
-     iput v3, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
-     const-string v2, "addFingerprintItemPreferences : mFingerprintManager.getEnrolledFingerprints() return null 1"
- 
-     invoke-static {v1, v2}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
- 
--    :cond_32
--    :goto_19
-+    :cond_34
-+    :goto_1b
-     iget v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
- 
-     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
-@@ -5253,11 +5329,11 @@
- 
-     move-result v4
- 
--    if-lt v2, v4, :cond_33
-+    if-lt v2, v4, :cond_35
- 
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAddFingerprint:Landroidx/preference/PreferenceScreen;
- 
--    if-eqz v2, :cond_33
-+    if-eqz v2, :cond_35
- 
-     invoke-virtual {p0, v6}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
- 
-@@ -5265,7 +5341,7 @@
- 
-     invoke-static {v1, v2}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
- 
--    :cond_33
-+    :cond_35
-     new-instance v2, Ljava/lang/StringBuilder;
- 
-     const-string/jumbo v4, "updateAddPreference [mEnrolledFingerCount] = "
-@@ -5288,22 +5364,22 @@
- 
-     move-result v2
- 
--    if-eqz v2, :cond_3d
-+    if-eqz v2, :cond_3f
- 
-     iget-boolean v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
- 
--    if-nez v2, :cond_3d
-+    if-nez v2, :cond_3f
- 
-     iget-boolean v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
- 
--    if-eqz v2, :cond_34
-+    if-eqz v2, :cond_36
- 
--    goto/16 :goto_1f
-+    goto/16 :goto_21
- 
--    :cond_34
-+    :cond_36
-     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
- 
--    if-nez v2, :cond_3c
-+    if-nez v2, :cond_3e
- 
-     new-instance v2, Lcom/samsung/android/settings/widget/SecRelativeLinkView;
- 
-@@ -5325,7 +5401,7 @@
- 
-     const/16 v4, 0x2016
- 
--    if-eqz v2, :cond_36
-+    if-eqz v2, :cond_38
- 
-     const-string/jumbo v2, "samsungpass://launch?action=main&pass_entry_point=Setting_Biometrics"
- 
-@@ -5363,7 +5439,7 @@
- 
-     move-result v5
- 
--    if-eqz v5, :cond_35
-+    if-eqz v5, :cond_37
- 
-     iget v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mUserId:I
- 
-@@ -5371,42 +5447,42 @@
- 
-     move-result v5
- 
--    if-eqz v5, :cond_36
-+    if-eqz v5, :cond_38
- 
--    :cond_35
-+    :cond_37
-     iget-object v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
- 
-     invoke-virtual {v5, v2}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->pushLinkData(Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;)Landroid/view/View;
- 
--    :cond_36
-+    :cond_38
-     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
- 
-     move-result-object v2
- 
-     const-string v5, "FpstFingerprintSettingsUtils"
- 
--    if-nez v2, :cond_37
-+    if-nez v2, :cond_39
- 
-     const-string v0, "isFingerprintSupportSamsungPay : context is null"
- 
-     invoke-static {v5, v0}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
- 
--    goto/16 :goto_1e
-+    goto/16 :goto_20
- 
--    :cond_37
-+    :cond_39
-     const-string v6, "com.samsung.android.spay"
- 
-     invoke-static {v2, v6}, Lcom/android/settings/Utils;->hasPackage(Landroid/content/Context;Ljava/lang/String;)Z
- 
-     move-result v7
- 
--    if-eqz v7, :cond_3a
-+    if-eqz v7, :cond_3c
- 
-     invoke-virtual {v2}, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
- 
-     move-result-object v2
- 
--    if-eqz v2, :cond_39
-+    if-eqz v2, :cond_3b
- 
-     const/16 v7, 0x80
- 
-@@ -5415,11 +5491,11 @@
- 
-     move-result-object v2
- 
--    if-eqz v2, :cond_38
-+    if-eqz v2, :cond_3a
- 
-     iget-object v2, v2, Landroid/content/pm/ApplicationInfo;->metaData:Landroid/os/Bundle;
- 
--    if-eqz v2, :cond_38
-+    if-eqz v2, :cond_3a
- 
-     const-string v7, "com.samsung.android.spay.is_stub"
- 
-@@ -5431,22 +5507,22 @@
- 
-     xor-int/2addr v2, v0
- 
--    goto :goto_1a
-+    goto :goto_1c
- 
-     :catch_2
-     move-exception v2
- 
--    goto :goto_1b
-+    goto :goto_1d
- 
--    :cond_38
-+    :cond_3a
-     move v2, v3
- 
--    :goto_1a
-+    :goto_1c
-     move v7, v0
- 
--    goto :goto_1c
-+    goto :goto_1e
- 
--    :goto_1b
-+    :goto_1d
-     new-instance v7, Ljava/lang/StringBuilder;
- 
-     const-string v8, "Failed to get information of SamsungPay, NameNotFound : "
-@@ -5465,19 +5541,19 @@
- 
-     invoke-static {v5, v2}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
- 
--    :cond_39
-+    :cond_3b
-     move v7, v0
- 
-     move v2, v3
- 
--    goto :goto_1c
-+    goto :goto_1e
- 
--    :cond_3a
-+    :cond_3c
-     move v2, v3
- 
-     move v7, v2
- 
--    :goto_1c
-+    :goto_1e
-     new-instance v8, Ljava/lang/StringBuilder;
- 
-     const-string v10, "isFingerprintSupportSamsungPay MeataData : "
-@@ -5498,9 +5574,9 @@
- 
-     invoke-static {v5, v8}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
- 
--    if-eqz v2, :cond_3c
-+    if-eqz v2, :cond_3e
- 
--    if-eqz v7, :cond_3c
-+    if-eqz v7, :cond_3e
- 
-     new-instance v2, Landroid/content/Intent;
- 
-@@ -5558,34 +5634,34 @@
-     .catch Ljava/lang/NullPointerException; {:try_start_3 .. :try_end_3} :catch_3
-     .catch Ljava/lang/IllegalArgumentException; {:try_start_3 .. :try_end_3} :catch_3
- 
--    if-lt v2, v0, :cond_3b
-+    if-lt v2, v0, :cond_3d
- 
-     const v0, 0x7f1425dd
- 
--    goto :goto_1d
-+    goto :goto_1f
- 
-     :catch_3
--    :cond_3b
-+    :cond_3d
-     const v0, 0x7f1413a5
- 
--    :goto_1d
-+    :goto_1f
-     iput v0, v5, Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;->titleRes:I
- 
-     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
- 
-     invoke-virtual {v0, v5}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->pushLinkData(Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;)Landroid/view/View;
- 
--    :cond_3c
--    :goto_1e
-+    :cond_3e
-+    :goto_20
-     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
- 
-     invoke-virtual {v0, p0}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->create(Ljava/lang/Object;)V
- 
--    :cond_3d
--    :goto_1f
-+    :cond_3f
-+    :goto_21
-     iget-boolean v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mNeedFmmPopup:Z
- 
--    if-eqz v0, :cond_3e
-+    if-eqz v0, :cond_40
- 
-     iput-boolean v3, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mNeedFmmPopup:Z
- 
-@@ -5608,7 +5684,7 @@
-     :try_end_4
-     .catch Ljava/lang/Exception; {:try_start_4 .. :try_end_4} :catch_4
- 
--    goto :goto_20
-+    goto :goto_22
- 
-     :catch_4
-     move-exception p0
-@@ -5619,8 +5695,8 @@
- 
-     invoke-virtual {p0}, Ljava/lang/Exception;->printStackTrace()V
- 
--    :cond_3e
--    :goto_20
-+    :cond_40
-+    :goto_22
-     sput-boolean v3, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsPreferenceClicked:Z
- 
-     return-void
-@@ -6340,10 +6416,12 @@
+@@ -4715,10 +4751,12 @@
  .end method
  
  .method public final stopFingerprintAuth()V
@@ -1558,7 +443,7 @@ index 6c967cfe5..36e00e048 100644
      if-eqz v0, :cond_0
  
      invoke-virtual {v0}, Landroid/os/CancellationSignal;->isCanceled()Z
-@@ -6354,18 +6432,27 @@
+@@ -4729,19 +4767,28 @@
  
      const-string v0, "FpstFingerprintSettings"
  
@@ -1591,36 +476,1092 @@ index 6c967cfe5..36e00e048 100644
 +    :cond_1
      return-void
  .end method
-diff --git a/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali b/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
-index 70b1cc9a3..1f31a63fd 100644
---- a/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
-+++ b/smali_classes4/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
-@@ -30,6 +30,8 @@
  
- .field public mIsRunRegister:Z
+@@ -5055,11 +5102,11 @@
  
-+.field public mIsShowSurfaceUpdates:Z
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v10, :cond_c
++    if-eqz v10, :cond_e
+ 
+     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsSupportFpAlwaysOn:Z
+ 
+-    if-eqz v10, :cond_b
++    if-eqz v10, :cond_d
+ 
+     if-eqz v4, :cond_9
+ 
+@@ -5067,19 +5114,41 @@
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+-    goto :goto_6
++    goto :goto_8
+ 
+     :cond_9
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+-    sget-boolean v8, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
++    move-result-object v8
 +
- .field public mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
++    invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintScreenOffIconAod()Z
++
++    move-result v10
++
++    if-nez v10, :cond_a
++
++    invoke-static {v8}, Lcom/android/settings/Utils;->isDesktopStandaloneMode(Landroid/content/Context;)Z
++
++    move-result v8
++
++    if-eqz v8, :cond_a
++
++    iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
++
++    const v10, 0x7f15274d
++
++    invoke-virtual {v8, v10}, Landroidx/preference/Preference;->setSummary(I)V
++
++    goto :goto_6
  
- .field public mPreviousStage:Ljava/lang/String;
-@@ -551,27 +553,128 @@
++    :cond_a
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+     const v10, 0x7f15274c
+ 
+     invoke-virtual {v8, v10}, Landroidx/preference/Preference;->setSummary(I)V
+ 
++    :goto_6
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
+@@ -5098,7 +5167,7 @@
+ 
+     invoke-virtual {v8, v10}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
+ 
+-    if-eqz v2, :cond_a
++    if-eqz v2, :cond_c
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5110,30 +5179,48 @@
+ 
+     move-result v8
+ 
+-    if-nez v8, :cond_a
++    if-nez v8, :cond_c
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
++    move-result-object v8
++
++    invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintScreenOffIconAod()Z
++
++    move-result v10
++
++    if-nez v10, :cond_b
++
++    invoke-static {v8}, Lcom/android/settings/Utils;->isDesktopStandaloneMode(Landroid/content/Context;)Z
++
++    move-result v8
++
++    if-eqz v8, :cond_b
++
++    goto :goto_7
++
++    :cond_b
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v8, v3}, Landroidx/preference/Preference;->setEnabled(Z)V
+ 
+-    goto :goto_6
++    goto :goto_8
+ 
+-    :cond_a
++    :cond_c
++    :goto_7
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v8, v5}, Landroidx/preference/Preference;->setEnabled(Z)V
+ 
+-    goto :goto_6
++    goto :goto_8
+ 
+-    :cond_b
++    :cond_d
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAlwaysOn:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_c
+-    :goto_6
++    :cond_e
++    :goto_8
+     invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFingerprintAlwaysOnType()V
+ 
+     const-string/jumbo v8, "set_always_on_type"
+@@ -5150,20 +5237,20 @@
+ 
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mStayOnLockScreen:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v10, :cond_e
++    if-eqz v10, :cond_10
+ 
+     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
+ 
+-    if-nez v10, :cond_d
++    if-nez v10, :cond_f
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getContext()Landroid/content/Context;
+ 
+-    :cond_d
++    :cond_f
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mStayOnLockScreen:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_e
++    :cond_10
+     const-string/jumbo v8, "screen_off_icon_aod"
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5174,7 +5261,7 @@
+ 
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
+ 
+-    if-eqz v10, :cond_13
++    if-eqz v10, :cond_15
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5182,17 +5269,17 @@
+ 
+     move-result v10
+ 
+-    if-eqz v10, :cond_12
++    if-eqz v10, :cond_14
+ 
+-    if-eqz v4, :cond_f
++    if-eqz v4, :cond_11
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
+ 
+-    goto/16 :goto_8
++    goto/16 :goto_a
+ 
+-    :cond_f
++    :cond_11
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+     move-result-object v8
+@@ -5289,7 +5376,7 @@
+ 
+     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
+ 
+-    if-eqz v2, :cond_11
++    if-eqz v2, :cond_13
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5301,11 +5388,11 @@
+ 
+     move-result v8
+ 
+-    if-nez v8, :cond_11
++    if-nez v8, :cond_13
+ 
+     iget-boolean v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsSupportFpAlwaysOn:Z
+ 
+-    if-eqz v8, :cond_10
++    if-eqz v8, :cond_12
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5317,28 +5404,28 @@
+ 
+     move-result v8
+ 
+-    if-nez v8, :cond_10
++    if-nez v8, :cond_12
+ 
+-    goto :goto_7
++    goto :goto_9
+ 
+-    :cond_10
++    :cond_12
+     invoke-virtual {p0, v3}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setEnableScreenOffIcon(Z)V
+ 
+-    goto :goto_8
++    goto :goto_a
+ 
+-    :cond_11
+-    :goto_7
++    :cond_13
++    :goto_9
+     invoke-virtual {p0, v5}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setEnableScreenOffIcon(Z)V
+ 
+-    goto :goto_8
++    goto :goto_a
+ 
+-    :cond_12
++    :cond_14
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIconAod:Landroidx/preference/SecDropDownPreference;
+ 
+-    :cond_13
+-    :goto_8
++    :cond_15
++    :goto_a
+     const-string/jumbo v8, "screen_off_icon"
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5349,13 +5436,13 @@
+ 
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIcon:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v10, :cond_14
++    if-eqz v10, :cond_16
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mScreenOffIcon:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_14
++    :cond_16
+     const-string/jumbo v8, "show_fingerprint_icon"
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5366,13 +5453,13 @@
+ 
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mShowFingerprintIcon:Landroidx/preference/SecPreferenceScreen;
+ 
+-    if-eqz v10, :cond_15
++    if-eqz v10, :cond_17
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mShowFingerprintIcon:Landroidx/preference/SecPreferenceScreen;
+ 
+-    :cond_15
++    :cond_17
+     const-string/jumbo v8, "support_web_signin"
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5383,7 +5470,7 @@
+ 
+     iput-object v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mWebSignIn:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v10, :cond_1a
++    if-eqz v10, :cond_1c
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5395,7 +5482,7 @@
+ 
+     move-result v10
+ 
+-    if-eqz v10, :cond_19
++    if-eqz v10, :cond_1b
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5405,19 +5492,19 @@
+ 
+     move-result v10
+ 
+-    if-nez v10, :cond_19
++    if-nez v10, :cond_1b
+ 
+     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
+ 
+-    if-nez v10, :cond_19
++    if-nez v10, :cond_1b
+ 
+     iget-boolean v10, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
+ 
+-    if-eqz v10, :cond_16
++    if-eqz v10, :cond_18
+ 
+-    goto :goto_b
++    goto :goto_d
+ 
+-    :cond_16
++    :cond_18
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mWebSignIn:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v8, p0}, Landroidx/preference/Preference;->setOnPreferenceChangeListener(Landroidx/preference/Preference$OnPreferenceChangeListener;)V
+@@ -5432,7 +5519,7 @@
+ 
+     move-result v10
+ 
+-    if-nez v10, :cond_18
++    if-nez v10, :cond_1a
+ 
+     invoke-virtual {p0}, Lcom/android/settings/SettingsPreferenceFragment;->getContentResolver()Landroid/content/ContentResolver;
+ 
+@@ -5444,16 +5531,16 @@
+ 
+     move-result v10
+ 
+-    if-eqz v10, :cond_17
++    if-eqz v10, :cond_19
+ 
+     move v10, v3
+ 
+-    goto :goto_9
++    goto :goto_b
+ 
+-    :cond_17
++    :cond_19
+     move v10, v5
+ 
+-    :goto_9
++    :goto_b
+     new-instance v11, Ljava/lang/StringBuilder;
+ 
+     const-string v12, "getFingerprintVerification :"
+@@ -5468,30 +5555,30 @@
+ 
+     invoke-static {v1, v11}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    goto :goto_a
++    goto :goto_c
+ 
+-    :cond_18
++    :cond_1a
+     move v10, v5
+ 
+-    :goto_a
++    :goto_c
+     invoke-virtual {v8, v10}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
+ 
+     move v8, v3
+ 
+-    goto :goto_c
++    goto :goto_e
+ 
+-    :cond_19
+-    :goto_b
++    :cond_1b
++    :goto_d
+     const-string/jumbo v10, "setFingerprintPreference : Remove Web Sign-In"
+ 
+     invoke-static {v1, v10}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+-    :cond_1a
++    :cond_1c
+     move v8, v5
+ 
+-    :goto_c
++    :goto_e
+     const-string/jumbo v10, "support_samsung_account"
+ 
+     invoke-virtual {p0, v10}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5502,7 +5589,7 @@
+ 
+     iput-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v11, :cond_21
++    if-eqz v11, :cond_23
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5514,7 +5601,7 @@
+ 
+     move-result v11
+ 
+-    if-eqz v11, :cond_20
++    if-eqz v11, :cond_22
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5524,7 +5611,7 @@
+ 
+     move-result v11
+ 
+-    if-eqz v11, :cond_1b
++    if-eqz v11, :cond_1d
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5534,30 +5621,30 @@
+ 
+     move-result v11
+ 
+-    if-nez v11, :cond_20
++    if-nez v11, :cond_22
+ 
+-    :cond_1b
++    :cond_1d
+     invoke-static {}, Landroid/os/UserHandle;->myUserId()I
+ 
+     move-result v11
+ 
+-    if-nez v11, :cond_20
++    if-nez v11, :cond_22
+ 
+     iget-boolean v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
+ 
+-    if-nez v11, :cond_20
++    if-nez v11, :cond_22
+ 
+     iget-boolean v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
+ 
+-    if-nez v11, :cond_20
++    if-nez v11, :cond_22
+ 
+     sget-boolean v11, Lcom/samsung/android/settings/Rune;->SUPPORT_DISABLE_ACCOUNTS_SETTINGS:Z
+ 
+-    if-eqz v11, :cond_1c
++    if-eqz v11, :cond_1e
+ 
+-    goto :goto_11
++    goto :goto_13
+ 
+-    :cond_1c
++    :cond_1e
+     invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->getFingerprintSamsungAccountVerification()Z
+ 
+     move-result v8
+@@ -5591,62 +5678,62 @@
+     :try_start_1
+     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccountContext:Landroidx/fragment/app/FragmentActivity;
+ 
+-    if-eqz v8, :cond_1d
++    if-eqz v8, :cond_1f
+ 
+-    if-eqz v10, :cond_1d
++    if-eqz v10, :cond_1f
+ 
+     move v12, v3
+ 
+-    goto :goto_d
++    goto :goto_f
+ 
+-    :cond_1d
++    :cond_1f
+     move v12, v5
+ 
+-    :goto_d
++    :goto_f
+     invoke-static {v11, v12}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setUseFingerprintForSA(Landroidx/fragment/app/FragmentActivity;I)V
+ 
+     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccountContext:Landroidx/fragment/app/FragmentActivity;
+ 
+-    if-eqz v8, :cond_1e
++    if-eqz v8, :cond_20
+ 
+-    if-eqz v10, :cond_1e
++    if-eqz v10, :cond_20
+ 
+     move v12, v3
+ 
+-    goto :goto_e
++    goto :goto_10
+ 
+-    :cond_1e
++    :cond_20
+     move v12, v5
+ 
+-    :goto_e
++    :goto_10
+     invoke-static {v11, v12}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->setFingerPrintOnSAConfirmed(Landroidx/fragment/app/FragmentActivity;I)V
+ 
+     iget-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v8, :cond_1f
++    if-eqz v8, :cond_21
+ 
+-    if-eqz v10, :cond_1f
++    if-eqz v10, :cond_21
+ 
+     move v8, v3
+ 
+-    goto :goto_f
++    goto :goto_11
+ 
+-    :cond_1f
++    :cond_21
+     move v8, v5
+ 
+-    :goto_f
++    :goto_11
+     invoke-virtual {v11, v8}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
+     :try_end_1
+     .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_1
+ 
+-    goto :goto_10
++    goto :goto_12
+ 
+     :catch_1
+     move-exception v8
+ 
+     invoke-virtual {v8}, Ljava/lang/Exception;->printStackTrace()V
+ 
+-    :goto_10
++    :goto_12
+     iget-object v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v8, v3}, Landroidx/preference/Preference;->setEnabled(Z)V
+@@ -5657,10 +5744,10 @@
+ 
+     move v8, v3
+ 
+-    goto :goto_12
++    goto :goto_14
+ 
+-    :cond_20
+-    :goto_11
++    :cond_22
++    :goto_13
+     const-string/jumbo v11, "setFingerprintPreference : Remove Samsung Account"
+ 
+     invoke-static {v1, v11}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+@@ -5669,8 +5756,8 @@
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mSamsungAccount:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_21
+-    :goto_12
++    :cond_23
++    :goto_14
+     const-string v10, "fast_recognition"
+ 
+     invoke-virtual {p0, v10}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5681,7 +5768,7 @@
+ 
+     iput-object v11, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFastRecognition:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v11, :cond_22
++    if-eqz v11, :cond_24
+ 
+     invoke-static {}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->isSupportFasterRecognition()V
+ 
+@@ -5693,8 +5780,8 @@
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFastRecognition:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_22
+-    if-nez v8, :cond_23
++    :cond_24
++    if-nez v8, :cond_25
+ 
+     const-string/jumbo v8, "setFingerprintPreference : No supported application"
+ 
+@@ -5704,8 +5791,8 @@
+ 
+     invoke-virtual {p0, v8}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+-    :cond_23
+-    if-eq v0, v3, :cond_24
++    :cond_25
++    if-eq v0, v3, :cond_26
+ 
+     const-string/jumbo v0, "setFingerprintPreference : SUW Remove reigster category"
+ 
+@@ -5715,7 +5802,7 @@
+ 
+     invoke-virtual {p0, v7}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+-    :cond_24
++    :cond_26
+     const-string v0, "fingerprint_effect"
+ 
+     invoke-virtual {p0, v0}, Lcom/android/settings/core/InstrumentedPreferenceFragment;->findPreference(Ljava/lang/CharSequence;)Landroidx/preference/Preference;
+@@ -5726,9 +5813,9 @@
+ 
+     iput-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
+ 
+-    if-eqz v7, :cond_28
++    if-eqz v7, :cond_2a
+ 
+-    if-nez v4, :cond_27
++    if-nez v4, :cond_29
+ 
+     sget-boolean v0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
+ 
+@@ -5748,7 +5835,7 @@
+ 
+     invoke-virtual {v0, v4}, Landroidx/preference/TwoStatePreference;->setChecked(Z)V
+ 
+-    if-eqz v2, :cond_26
++    if-eqz v2, :cond_28
+ 
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+@@ -5760,32 +5847,32 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_25
++    if-eqz v0, :cond_27
+ 
+-    goto :goto_13
++    goto :goto_15
+ 
+-    :cond_25
++    :cond_27
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v0, v3}, Landroidx/preference/Preference;->setEnabled(Z)V
+ 
+-    goto :goto_14
++    goto :goto_16
+ 
+-    :cond_26
+-    :goto_13
++    :cond_28
++    :goto_15
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
+ 
+     invoke-virtual {v0, v5}, Landroidx/preference/Preference;->setEnabled(Z)V
+ 
+-    goto :goto_14
++    goto :goto_16
+ 
+-    :cond_27
++    :cond_29
+     invoke-virtual {p0, v0}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerEffect:Landroidx/preference/SwitchPreference;
+ 
+-    :cond_28
+-    :goto_14
++    :cond_2a
++    :goto_16
+     sget-boolean v0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
+ 
+     const-string v0, "key_fingerprint_icon_and_animation_style"
+@@ -5794,11 +5881,11 @@
+ 
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+-    if-eqz v0, :cond_29
++    if-eqz v0, :cond_2b
+ 
+     iput-object v9, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+-    :cond_29
++    :cond_2b
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
+ 
+     iget v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mUserId:I
+@@ -5815,9 +5902,9 @@
+ 
+     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+-    if-eqz v2, :cond_2f
++    if-eqz v2, :cond_31
+ 
+-    if-eqz v0, :cond_2f
++    if-eqz v0, :cond_31
+ 
+     invoke-interface {v2}, Ljava/util/List;->size()I
+ 
+@@ -5827,15 +5914,15 @@
+ 
+     move v2, v5
+ 
+-    :goto_15
++    :goto_17
+     iget v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+-    if-ge v2, v4, :cond_2b
++    if-ge v2, v4, :cond_2d
+ 
+     move v4, v2
+ 
+-    :goto_16
+-    if-lez v4, :cond_2a
++    :goto_18
++    if-lez v4, :cond_2c
+ 
+     iget-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+@@ -5863,7 +5950,7 @@
+ 
+     move-result v10
+ 
+-    if-le v7, v10, :cond_2a
++    if-le v7, v10, :cond_2c
+ 
+     iget-object v7, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+@@ -5883,21 +5970,21 @@
+ 
+     add-int/lit8 v4, v4, -0x1
+ 
+-    goto :goto_16
++    goto :goto_18
+ 
+-    :cond_2a
++    :cond_2c
+     add-int/lit8 v2, v2, 0x1
+ 
+-    goto :goto_15
++    goto :goto_17
+ 
+-    :cond_2b
++    :cond_2d
+     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+     invoke-interface {v2}, Ljava/util/List;->size()I
+ 
+     move-result v2
+ 
+-    if-eq v4, v2, :cond_2c
++    if-eq v4, v2, :cond_2e
+ 
+     const-string v2, "addFingerprintItemPreferences : Sort Error"
+ 
+@@ -5915,7 +6002,7 @@
+ 
+     iput-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+-    if-eqz v2, :cond_2c
++    if-eqz v2, :cond_2e
+ 
+     invoke-interface {v2}, Ljava/util/List;->size()I
+ 
+@@ -5923,7 +6010,7 @@
+ 
+     iput v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+-    :cond_2c
++    :cond_2e
+     new-instance v2, Ljava/lang/StringBuilder;
+ 
+     const-string v4, "addFingerprintItemPreferences : mEnrolledFingerCount["
+@@ -5938,14 +6025,14 @@
+ 
+     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+-    if-eqz v2, :cond_2e
++    if-eqz v2, :cond_30
+ 
+     move v2, v5
+ 
+-    :goto_17
++    :goto_19
+     iget v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+-    if-ge v2, v4, :cond_2d
++    if-ge v2, v4, :cond_2f
+ 
+     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+@@ -5997,15 +6084,15 @@
+ 
+     add-int/lit8 v2, v2, 0x1
+ 
+-    goto :goto_17
++    goto :goto_19
+ 
+-    :cond_2d
++    :cond_2f
+     move v2, v5
+ 
+-    :goto_18
++    :goto_1a
+     iget v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+-    if-ge v2, v4, :cond_30
++    if-ge v2, v4, :cond_32
+ 
+     iget-object v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->items:Ljava/util/List;
+ 
+@@ -6083,26 +6170,26 @@
+ 
+     add-int/lit8 v2, v2, 0x1
+ 
+-    goto :goto_18
++    goto :goto_1a
+ 
+-    :cond_2e
++    :cond_30
+     iput v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+     const-string v0, "addFingerprintItemPreferences : mFingerprintManager.getEnrolledFingerprints() return null 2"
+ 
+     invoke-static {v1, v0}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    goto :goto_19
++    goto :goto_1b
+ 
+-    :cond_2f
++    :cond_31
+     iput v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+     const-string v0, "addFingerprintItemPreferences : mFingerprintManager.getEnrolledFingerprints() return null 1"
+ 
+     invoke-static {v1, v0}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    :cond_30
+-    :goto_19
++    :cond_32
++    :goto_1b
+     iget v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mEnrolledFingerCount:I
+ 
+     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
+@@ -6111,11 +6198,11 @@
+ 
+     move-result v2
+ 
+-    if-lt v0, v2, :cond_31
++    if-lt v0, v2, :cond_33
+ 
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mAddFingerprint:Landroidx/preference/PreferenceScreen;
+ 
+-    if-eqz v0, :cond_31
++    if-eqz v0, :cond_33
+ 
+     invoke-virtual {p0, v6}, Lcom/android/settings/SettingsPreferenceFragment;->removePreference(Ljava/lang/String;)Z
+ 
+@@ -6123,7 +6210,7 @@
+ 
+     invoke-static {v1, v0}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    :cond_31
++    :cond_33
+     new-instance v0, Ljava/lang/StringBuilder;
+ 
+     const-string/jumbo v2, "updateAddPreference [mEnrolledFingerCount] = "
+@@ -6146,22 +6233,22 @@
+ 
+     move-result v0
+ 
+-    if-eqz v0, :cond_3a
++    if-eqz v0, :cond_3c
+ 
+     iget-boolean v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsAfw:Z
+ 
+-    if-nez v0, :cond_3a
++    if-nez v0, :cond_3c
+ 
+     iget-boolean v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mIsKnox:Z
+ 
+-    if-eqz v0, :cond_32
++    if-eqz v0, :cond_34
+ 
+-    goto/16 :goto_1f
++    goto/16 :goto_21
+ 
+-    :cond_32
++    :cond_34
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
+ 
+-    if-nez v0, :cond_39
++    if-nez v0, :cond_3b
+ 
+     new-instance v0, Lcom/samsung/android/settings/widget/SecRelativeLinkView;
+ 
+@@ -6183,7 +6270,7 @@
+ 
+     const/16 v1, 0x2016
+ 
+-    if-eqz v0, :cond_34
++    if-eqz v0, :cond_36
+ 
+     const-string/jumbo v0, "samsungpass://launch?action=main&pass_entry_point=Setting_Biometrics"
+ 
+@@ -6221,7 +6308,7 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_33
++    if-eqz v2, :cond_35
+ 
+     iget v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mUserId:I
+ 
+@@ -6229,42 +6316,42 @@
+ 
+     move-result v2
+ 
+-    if-eqz v2, :cond_34
++    if-eqz v2, :cond_36
+ 
+-    :cond_33
++    :cond_35
+     iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
+ 
+     invoke-virtual {v2, v0}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->pushLinkData(Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;)Landroid/view/View;
+ 
+-    :cond_34
++    :cond_36
+     invoke-virtual {p0}, Landroidx/fragment/app/Fragment;->getActivity()Landroidx/fragment/app/FragmentActivity;
+ 
+     move-result-object v0
+ 
+     const-string v2, "FpstFingerprintSettingsUtils"
+ 
+-    if-nez v0, :cond_35
++    if-nez v0, :cond_37
+ 
+     const-string v0, "isFingerprintSupportSamsungPay : context is null"
+ 
+     invoke-static {v2, v0}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    goto/16 :goto_1e
++    goto/16 :goto_20
+ 
+-    :cond_35
++    :cond_37
+     const-string v4, "com.samsung.android.spay"
+ 
+     invoke-static {v0, v4}, Lcom/android/settings/Utils;->hasPackage(Landroid/content/Context;Ljava/lang/String;)Z
+ 
+     move-result v6
+ 
+-    if-eqz v6, :cond_37
++    if-eqz v6, :cond_39
+ 
+     invoke-virtual {v0}, Landroid/content/Context;->getPackageManager()Landroid/content/pm/PackageManager;
+ 
+     move-result-object v0
+ 
+-    if-eqz v0, :cond_36
++    if-eqz v0, :cond_38
+ 
+     const/16 v6, 0x80
+ 
+@@ -6273,11 +6360,11 @@
+ 
+     move-result-object v0
+ 
+-    if-eqz v0, :cond_36
++    if-eqz v0, :cond_38
+ 
+     iget-object v0, v0, Landroid/content/pm/ApplicationInfo;->metaData:Landroid/os/Bundle;
+ 
+-    if-eqz v0, :cond_36
++    if-eqz v0, :cond_38
+ 
+     const-string v6, "com.samsung.android.spay.is_stub"
+ 
+@@ -6289,20 +6376,20 @@
+ 
+     xor-int/lit8 v5, v0, 0x1
+ 
+-    goto :goto_1a
++    goto :goto_1c
+ 
+     :catch_2
+     move-exception v0
+ 
+-    goto :goto_1b
++    goto :goto_1d
+ 
+-    :cond_36
+-    :goto_1a
++    :cond_38
++    :goto_1c
+     move v0, v3
+ 
+-    goto :goto_1c
++    goto :goto_1e
+ 
+-    :goto_1b
++    :goto_1d
+     new-instance v6, Ljava/lang/StringBuilder;
+ 
+     const-string v7, "Failed to get information of SamsungPay, NameNotFound : "
+@@ -6321,21 +6408,21 @@
+ 
+     invoke-static {v2, v0}, Landroid/util/Log;->secE(Ljava/lang/String;Ljava/lang/String;)I
+ 
+-    goto :goto_1a
++    goto :goto_1c
+ 
+-    :cond_37
++    :cond_39
+     move v0, v5
+ 
+-    :goto_1c
++    :goto_1e
+     const-string v6, "isFingerprintSupportSamsungPay MeataData : "
+ 
+     const-string v7, ", Package : "
+ 
+     invoke-static {v6, v5, v7, v0, v2}, Lcom/android/settings/bluetooth/BluetoothDetailsProfilesController$$ExternalSyntheticOutline0;->m(Ljava/lang/String;ZLjava/lang/String;ZLjava/lang/String;)V
+ 
+-    if-eqz v5, :cond_39
++    if-eqz v5, :cond_3b
+ 
+-    if-eqz v0, :cond_39
++    if-eqz v0, :cond_3b
+ 
+     new-instance v0, Landroid/content/Intent;
+ 
+@@ -6393,30 +6480,30 @@
+     .catch Ljava/lang/NullPointerException; {:try_start_3 .. :try_end_3} :catch_3
+     .catch Ljava/lang/IllegalArgumentException; {:try_start_3 .. :try_end_3} :catch_3
+ 
+-    if-lt v0, v3, :cond_38
++    if-lt v0, v3, :cond_3a
+ 
+     const v0, 0x7f152797
+ 
+-    goto :goto_1d
++    goto :goto_1f
+ 
+     :catch_3
+-    :cond_38
++    :cond_3a
+     const v0, 0x7f151451
+ 
+-    :goto_1d
++    :goto_1f
+     iput v0, v2, Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;->titleRes:I
+ 
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
+ 
+     invoke-virtual {v0, v2}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->pushLinkData(Lcom/samsung/android/settings/SettingsPreferenceFragmentLinkData;)Landroid/view/View;
+ 
+-    :cond_39
+-    :goto_1e
++    :cond_3b
++    :goto_20
+     iget-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettings;->mRelativeLinkView:Lcom/samsung/android/settings/widget/SecRelativeLinkView;
+ 
+     invoke-virtual {v0, p0}, Lcom/samsung/android/settings/widget/SecRelativeLinkView;->create(Ljava/lang/Object;)V
+ 
+-    :cond_3a
+-    :goto_1f
++    :cond_3c
++    :goto_21
+     return-void
+ .end method
+diff --git a/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali b/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
+index ff216223..c130663d 100644
+--- a/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
++++ b/smali_classes5/com/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint.smali
+@@ -501,27 +501,113 @@
      :cond_0
-     sget-boolean v1, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
+     sget-boolean v0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
  
 -    invoke-virtual {p0}, Landroid/app/Activity;->getContentResolver()Landroid/content/ContentResolver;
-+    const-string v1, "getShowSurfaceUpdates : "
-+
++    const-string v0, "getShowSurfaceUpdates : "
+ 
+-    move-result-object v0
 +    invoke-static {}, Landroid/os/Parcel;->obtain()Landroid/os/Parcel;
 +
 +    move-result-object v3
-+
+ 
+-    const-string v3, "always_finish_activities"
 +    invoke-static {}, Landroid/os/Parcel;->obtain()Landroid/os/Parcel;
-+
+ 
+-    const/4 v4, 0x0
 +    move-result-object v4
-+
+ 
+-    invoke-static {v0, v3, v4}, Landroid/provider/Settings$Global;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
 +    const/4 v5, 0x0
-+
+ 
+-    move-result v0
 +    :try_start_0
 +    const-string v6, "SurfaceFlinger"
 +
@@ -1630,12 +1571,9 @@ index 70b1cc9a3..1f31a63fd 100644
 +
 +    if-eqz v6, :cond_2
 +
-+    if-eqz v3, :cond_2
-+
-+    if-eqz v4, :cond_2
-+
 +    const-string v7, "android.ui.ISurfaceComposer"
-+
+ 
+-    const v3, 0x7f15274f
 +    invoke-virtual {v3, v7}, Landroid/os/Parcel;->writeInterfaceToken(Ljava/lang/String;)V
 +
 +    const/16 v7, 0x3f2
@@ -1648,104 +1586,87 @@ index 70b1cc9a3..1f31a63fd 100644
 +
 +    invoke-virtual {v4}, Landroid/os/Parcel;->readInt()I
 +
-+    move-result v6
-+
-+    if-eqz v6, :cond_1
-+
-+    move v6, v2
++    move-result v0
++    :try_end_0
++    .catch Landroid/os/RemoteException; {:try_start_0 .. :try_end_0} :catch_0
++    .catchall {:try_start_0 .. :try_end_0} :catchall_0
+ 
+     if-eqz v0, :cond_1
+ 
++    move v0, v2
 +
 +    goto :goto_0
 +
 +    :cond_1
-+    move v6, v5
++    move v0, v5
 +
 +    :goto_0
-+    iput-boolean v6, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsShowSurfaceUpdates:Z
-+    :try_end_0
-+    .catch Landroid/os/RemoteException; {:try_start_0 .. :try_end_0} :catch_0
-+    .catchall {:try_start_0 .. :try_end_0} :catchall_0
-+
-+    goto :goto_1
-+
-+    :catchall_0
-+    move-exception p0
-+
-+    goto/16 :goto_9
-+
-+    :catch_0
-+    move-exception v6
-+
-+    goto :goto_3
-+
-+    :cond_2
-+    :goto_1
-+    if-eqz v3, :cond_3
-+
 +    invoke-virtual {v3}, Landroid/os/Parcel;->recycle()V
 +
-+    :cond_3
-+    if-eqz v4, :cond_5
-+
-+    :goto_2
 +    invoke-virtual {v4}, Landroid/os/Parcel;->recycle()V
 +
 +    goto :goto_4
 +
-+    :goto_3
++    :catchall_0
++    move-exception p0
++
++    goto/16 :goto_b
++
++    :catch_0
++    move-exception v6
++
++    goto :goto_2
++
++    :cond_2
++    :goto_1
++    invoke-virtual {v3}, Landroid/os/Parcel;->recycle()V
++
++    invoke-virtual {v4}, Landroid/os/Parcel;->recycle()V
++
++    goto :goto_3
++
++    :goto_2
 +    :try_start_1
 +    new-instance v7, Ljava/lang/StringBuilder;
 +
-+    invoke-direct {v7, v1}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
++    invoke-direct {v7, v0}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
 +
 +    invoke-virtual {v7, v6}, Ljava/lang/StringBuilder;->append(Ljava/lang/Object;)Ljava/lang/StringBuilder;
 +
 +    invoke-virtual {v7}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
- 
-     move-result-object v1
- 
--    const-string v3, "always_finish_activities"
-+    invoke-static {v0, v1}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
++
++    move-result-object v0
++
++    invoke-static {v1, v0}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
 +    :try_end_1
 +    .catchall {:try_start_1 .. :try_end_1} :catchall_0
- 
--    const/4 v4, 0x0
-+    if-eqz v3, :cond_4
- 
--    invoke-static {v1, v3, v4}, Landroid/provider/Settings$Global;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
-+    invoke-virtual {v3}, Landroid/os/Parcel;->recycle()V
- 
--    move-result v1
-+    :cond_4
-+    if-eqz v4, :cond_5
 +
-+    goto :goto_2
++    goto :goto_1
 +
-+    :cond_5
++    :goto_3
++    move v0, v5
++
 +    :goto_4
-+    iget-boolean v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsShowSurfaceUpdates:Z
++    const v3, 0x7f15276a
 +
-+    const v3, 0x7f1425b1
- 
--    const v3, 0x7f142599
-+    const v4, 0x7f142599
- 
--    if-eqz v1, :cond_1
-+    if-eqz v1, :cond_6
- 
++    const v4, 0x7f15274f
++
++    if-eqz v0, :cond_3
++
      invoke-virtual {p0}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
  
      move-result-object p1
  
--    const v0, 0x7f1412f9
-+    const v0, 0x7f142dc9
+-    const v0, 0x7f1513a5
++    const v0, 0x7f152fd3
  
      invoke-virtual {p0, v0}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
  
-@@ -581,38 +684,77 @@
+@@ -531,13 +617,50 @@
  
      move-result-object v0
  
--    const v1, 0x7f1425b1
+-    const v1, 0x7f15276a
 +    invoke-virtual {p1, v3, v0}, Landroid/content/res/Resources;->getString(I[Ljava/lang/Object;)Ljava/lang/String;
 +
 +    move-result-object p1
@@ -1756,28 +1677,26 @@ index 70b1cc9a3..1f31a63fd 100644
 +
 +    invoke-static {p0, v0, p1, v2}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->showSensorErrorDialog(Landroid/app/Activity;Ljava/lang/String;Ljava/lang/String;Z)V
 +
-+    goto/16 :goto_8
++    return-void
 +
-+    :cond_6
++    :cond_3
 +    invoke-virtual {p0}, Landroid/app/Activity;->getContentResolver()Landroid/content/ContentResolver;
 +
-+    move-result-object v1
++    move-result-object v0
 +
 +    const-string v6, "always_finish_activities"
 +
-+    invoke-static {v1, v6, v5}, Landroid/provider/Settings$Global;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
- 
--    invoke-virtual {p1, v1, v0}, Landroid/content/res/Resources;->getString(I[Ljava/lang/Object;)Ljava/lang/String;
-+    move-result v1
++    invoke-static {v0, v6, v5}, Landroid/provider/Settings$Global;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
 +
-+    if-eqz v1, :cond_7
++    move-result v0
++
++    if-eqz v0, :cond_4
 +
 +    invoke-virtual {p0}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
- 
-     move-result-object p1
- 
--    invoke-virtual {p0, v3}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
-+    const v0, 0x7f1412f9
++
++    move-result-object p1
++
++    const v0, 0x7f1513a5
 +
 +    invoke-virtual {p0, v0}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
 +
@@ -1786,49 +1705,9 @@ index 70b1cc9a3..1f31a63fd 100644
 +    filled-new-array {v0}, [Ljava/lang/Object;
 +
 +    move-result-object v0
-+
+ 
+-    invoke-virtual {p1, v1, v0}, Landroid/content/res/Resources;->getString(I[Ljava/lang/Object;)Ljava/lang/String;
 +    invoke-virtual {p1, v3, v0}, Landroid/content/res/Resources;->getString(I[Ljava/lang/Object;)Ljava/lang/String;
-+
-+    move-result-object p1
-+
-+    invoke-virtual {p0, v4}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
- 
-     move-result-object v0
- 
-     invoke-static {p0, v0, p1, v2}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->showSensorErrorDialog(Landroid/app/Activity;Ljava/lang/String;Ljava/lang/String;Z)V
- 
--    return-void
-+    goto/16 :goto_8
-+
-+    :cond_7
-+    sget-boolean v1, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
- 
--    :cond_1
-     invoke-virtual {p0}, Landroid/app/Activity;->getBaseContext()Landroid/content/Context;
- 
-     move-result-object v1
- 
--    if-eqz v1, :cond_2
-+    if-eqz v1, :cond_8
- 
-     invoke-virtual {v1}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
- 
-     move-result-object v1
- 
--    const-string v5, "any_screen_running"
-+    const-string v3, "any_screen_running"
- 
--    invoke-static {v1, v5, v4}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
-+    invoke-static {v1, v3, v5}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
- 
-     move-result v1
- 
--    if-ne v1, v2, :cond_3
-+    if-ne v1, v2, :cond_9
- 
-     invoke-virtual {p0}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
- 
-@@ -624,22 +766,22 @@
  
      move-result-object p1
  
@@ -1837,41 +1716,102 @@ index 70b1cc9a3..1f31a63fd 100644
  
      move-result-object v0
  
-     invoke-static {p0, v0, p1, v2}, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->showSensorErrorDialog(Landroid/app/Activity;Ljava/lang/String;Ljava/lang/String;Z)V
+@@ -545,24 +668,48 @@
  
--    return-void
-+    goto/16 :goto_8
+     return-void
+ 
+-    :cond_1
++    :cond_4
++    sget-boolean v0, Lcom/samsung/android/settings/biometrics/fingerprint/FingerprintSettingsUtils;->SUB_DISPLAY_IS_LARGE_SCREEN:Z
++
+     invoke-virtual {p0}, Landroid/app/Activity;->getBaseContext()Landroid/content/Context;
+ 
+     move-result-object v0
+ 
+-    if-eqz v0, :cond_2
++    if-eqz v0, :cond_6
+ 
+     invoke-virtual {v0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
+ 
+     move-result-object v0
+ 
+-    const-string v5, "any_screen_running"
++    const-string v3, "any_screen_running"
+ 
+-    invoke-static {v0, v5, v4}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
++    invoke-static {v0, v3, v5}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
+ 
+     move-result v0
+ 
+-    if-ne v0, v2, :cond_3
++    if-ne v0, v2, :cond_5
++
++    move v0, v2
++
++    goto :goto_6
++
++    :cond_5
++    :goto_5
++    move v0, v5
++
++    goto :goto_6
++
++    :cond_6
++    const-string v0, "FpstFingerprintSettingsUtils"
++
++    const-string v3, "isOneHandedMode : context = null"
++
++    invoke-static {v0, v3}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
++
++    goto :goto_5
++
++    :goto_6
++    if-eqz v0, :cond_7
+ 
+     invoke-virtual {p0}, Landroid/app/Activity;->getResources()Landroid/content/res/Resources;
+ 
+@@ -574,7 +721,7 @@
+ 
+     move-result-object p1
+ 
+-    invoke-virtual {p0, v3}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
++    invoke-virtual {p0, v4}, Landroid/app/Activity;->getString(I)Ljava/lang/String;
+ 
+     move-result-object v0
+ 
+@@ -582,14 +729,7 @@
+ 
+     return-void
  
 -    :cond_2
-+    :cond_8
-     const-string v1, "FpstFingerprintSettingsUtils"
- 
-     const-string v2, "isOneHandedMode : context = null"
- 
-     invoke-static {v1, v2}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
- 
+-    const-string v0, "FpstFingerprintSettingsUtils"
+-
+-    const-string v2, "isOneHandedMode : context = null"
+-
+-    invoke-static {v0, v2}, Landroid/util/Log;->w(Ljava/lang/String;Ljava/lang/String;)I
+-
 -    :cond_3
-+    :cond_9
++    :cond_7
      invoke-virtual {p0}, Landroid/app/Activity;->getIntent()Landroid/content/Intent;
  
-     move-result-object v1
-@@ -664,13 +806,13 @@
+     move-result-object v0
+@@ -614,13 +754,13 @@
  
      iget-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mPreviousStage:Ljava/lang/String;
  
 -    if-nez v2, :cond_4
-+    if-nez v2, :cond_a
++    if-nez v2, :cond_8
  
      const-string v2, "fingerprint_register_external"
  
      iput-object v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mPreviousStage:Ljava/lang/String;
  
 -    :cond_4
-+    :cond_a
++    :cond_8
      const-string v2, "android.intent.extra.USER_ID"
  
      invoke-static {}, Landroid/os/UserHandle;->myUserId()I
-@@ -703,11 +845,11 @@
+@@ -653,11 +793,11 @@
  
      const-string v3, "hw_auth_token"
  
@@ -1881,48 +1821,48 @@ index 70b1cc9a3..1f31a63fd 100644
      const-wide/16 v6, 0x0
  
 -    if-eqz p1, :cond_5
-+    if-eqz p1, :cond_b
++    if-eqz p1, :cond_9
  
      iget v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
-@@ -715,7 +857,7 @@
+@@ -665,7 +805,7 @@
  
      move-result v8
  
 -    if-eqz v8, :cond_5
-+    if-eqz v8, :cond_b
++    if-eqz v8, :cond_9
  
      const/4 v8, 0x0
  
-@@ -723,16 +865,16 @@
+@@ -673,16 +813,16 @@
  
      iput-wide v6, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mGkPwHandle:J
  
 -    goto :goto_0
-+    goto :goto_5
++    goto :goto_7
  
 -    :cond_5
-+    :cond_b
-     invoke-static {v1}, Lcom/android/settings/biometrics/GatekeeperPasswordProvider;->containsGatekeeperPasswordHandle(Landroid/content/Intent;)Z
++    :cond_9
+     invoke-static {v0}, Lcom/android/settings/biometrics/GatekeeperPasswordProvider;->containsGatekeeperPasswordHandle(Landroid/content/Intent;)Z
  
      move-result v8
  
 -    if-eqz v8, :cond_6
-+    if-eqz v8, :cond_c
++    if-eqz v8, :cond_a
  
--    invoke-virtual {v1, v5, v6, v7}, Landroid/content/Intent;->getLongExtra(Ljava/lang/String;J)J
-+    invoke-virtual {v1, v4, v6, v7}, Landroid/content/Intent;->getLongExtra(Ljava/lang/String;J)J
+-    invoke-virtual {v0, v5, v6, v7}, Landroid/content/Intent;->getLongExtra(Ljava/lang/String;J)J
++    invoke-virtual {v0, v4, v6, v7}, Landroid/content/Intent;->getLongExtra(Ljava/lang/String;J)J
  
      move-result-wide v8
  
-@@ -750,17 +892,17 @@
+@@ -700,17 +840,17 @@
  
      iput-wide v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mChallenge:J
  
 -    :cond_6
 -    :goto_0
-+    :cond_c
-+    :goto_5
++    :cond_a
++    :goto_7
      iget v8, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
      invoke-static {v8}, Lcom/samsung/android/app/SemDualAppManager;->isDualAppId(I)Z
@@ -1930,72 +1870,72 @@ index 70b1cc9a3..1f31a63fd 100644
      move-result v8
  
 -    if-eqz v8, :cond_7
-+    if-eqz v8, :cond_d
++    if-eqz v8, :cond_b
  
 -    iput v4, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
 +    iput v5, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
      new-instance v8, Ljava/lang/StringBuilder;
  
-@@ -778,10 +920,10 @@
+@@ -728,10 +868,10 @@
  
-     invoke-static {v0, v8}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+     invoke-static {v1, v8}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
  
 -    :cond_7
-+    :cond_d
++    :cond_b
      const-string v8, "fromSetupWizard"
  
--    invoke-virtual {v1, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
-+    invoke-virtual {v1, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
+-    invoke-virtual {v0, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
++    invoke-virtual {v0, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
  
      move-result v8
  
-@@ -789,7 +931,7 @@
+@@ -739,7 +879,7 @@
  
      const-string v8, "isFromKnoxSetupWizard"
  
--    invoke-virtual {v1, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
-+    invoke-virtual {v1, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
+-    invoke-virtual {v0, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
++    invoke-virtual {v0, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
  
      move-result v8
  
-@@ -797,7 +939,7 @@
+@@ -747,7 +887,7 @@
  
      const-string v8, "isFromKnoxFingerprintPlus"
  
--    invoke-virtual {v1, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
-+    invoke-virtual {v1, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
+-    invoke-virtual {v0, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
++    invoke-virtual {v0, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
  
      move-result v8
  
-@@ -805,7 +947,7 @@
+@@ -755,7 +895,7 @@
  
      const-string v8, "is_knox"
  
--    invoke-virtual {v1, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
-+    invoke-virtual {v1, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
+-    invoke-virtual {v0, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
++    invoke-virtual {v0, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
  
      move-result v8
  
-@@ -813,7 +955,7 @@
+@@ -763,7 +903,7 @@
  
      const-string v8, "is_knox_two_step"
  
--    invoke-virtual {v1, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
-+    invoke-virtual {v1, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
+-    invoke-virtual {v0, v8, v4}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
++    invoke-virtual {v0, v8, v5}, Landroid/content/Intent;->getBooleanExtra(Ljava/lang/String;Z)Z
  
-     move-result v1
+     move-result v0
  
-@@ -867,33 +1009,33 @@
+@@ -817,33 +957,33 @@
  
-     iput-object v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
+     iput-object v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
  
--    if-nez v1, :cond_8
-+    if-nez v1, :cond_e
+-    if-nez v0, :cond_8
++    if-nez v0, :cond_c
  
      const-string p1, "[onCreate] mFingerprintManager == null"
  
-     invoke-static {v0, p1}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
+     invoke-static {v1, p1}, Landroid/util/Log;->secD(Ljava/lang/String;Ljava/lang/String;)I
  
 -    invoke-virtual {p0, v4}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->showSensorErrorDialog(I)V
 +    invoke-virtual {p0, v5}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->showSensorErrorDialog(I)V
@@ -2003,17 +1943,17 @@ index 70b1cc9a3..1f31a63fd 100644
      return-void
  
 -    :cond_8
-+    :cond_e
-     invoke-virtual {v1}, Landroid/hardware/fingerprint/FingerprintManager;->isHardwareDetected()Z
++    :cond_c
+     invoke-virtual {v0}, Landroid/hardware/fingerprint/FingerprintManager;->isHardwareDetected()Z
  
-     move-result v1
+     move-result v0
  
--    if-nez v1, :cond_9
-+    if-nez v1, :cond_f
+-    if-nez v0, :cond_9
++    if-nez v0, :cond_d
  
      const-string p1, "[onCreate] isHardwareDetected = false"
  
-     invoke-static {v0, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
+     invoke-static {v1, p1}, Landroid/util/Log;->e(Ljava/lang/String;Ljava/lang/String;)I
  
 -    invoke-virtual {p0, v4}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->showSensorErrorDialog(I)V
 +    invoke-virtual {p0, v5}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->showSensorErrorDialog(I)V
@@ -2022,161 +1962,152 @@ index 70b1cc9a3..1f31a63fd 100644
  
 -    :cond_9
 -    if-eqz p1, :cond_a
-+    :cond_f
-+    if-eqz p1, :cond_10
++    :cond_d
++    if-eqz p1, :cond_e
  
      invoke-virtual {p1, v3}, Landroid/os/Bundle;->getByteArray(Ljava/lang/String;)[B
  
-@@ -911,7 +1053,7 @@
+@@ -861,7 +1001,7 @@
  
-     iget-wide v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mGkPwHandle:J
+     iget-wide v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mGkPwHandle:J
  
--    invoke-virtual {p1, v5, v1, v2}, Landroid/os/Bundle;->getLong(Ljava/lang/String;J)J
-+    invoke-virtual {p1, v4, v1, v2}, Landroid/os/Bundle;->getLong(Ljava/lang/String;J)J
+-    invoke-virtual {p1, v5, v2, v3}, Landroid/os/Bundle;->getLong(Ljava/lang/String;J)J
++    invoke-virtual {p1, v4, v2, v3}, Landroid/os/Bundle;->getLong(Ljava/lang/String;J)J
  
-     move-result-wide v1
+     move-result-wide v2
  
-@@ -925,8 +1067,8 @@
+@@ -875,35 +1015,35 @@
  
-     iput-boolean v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsRunRegister:Z
+     iput-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsRunRegister:Z
  
 -    :cond_a
--    if-eqz p1, :cond_b
-+    :cond_10
-+    if-eqz p1, :cond_11
++    :cond_e
+     iget-wide v2, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mGkPwHandle:J
  
-     const-string v1, "StatusBarToken"
+     cmp-long p1, v2, v6
  
-@@ -936,35 +1078,35 @@
- 
-     iput-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mStatusBarToken:Landroid/os/IBinder;
- 
--    :cond_b
-+    :cond_11
-     iget-wide v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mGkPwHandle:J
- 
-     cmp-long p1, v1, v6
- 
--    if-nez p1, :cond_15
-+    if-nez p1, :cond_1a
+-    if-nez p1, :cond_14
++    if-nez p1, :cond_17
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mToken:[B
  
--    if-eqz p1, :cond_c
-+    if-eqz p1, :cond_12
+-    if-eqz p1, :cond_b
++    if-eqz p1, :cond_f
  
--    goto/16 :goto_2
-+    goto/16 :goto_7
+-    goto/16 :goto_3
++    goto/16 :goto_9
  
--    :cond_c
-+    :cond_12
+-    :cond_b
++    :cond_f
      iget-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsFromKnoxOtherCases:Z
  
--    if-nez p1, :cond_f
-+    if-nez p1, :cond_15
+-    if-nez p1, :cond_e
++    if-nez p1, :cond_12
  
      iget-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsFromKnoxSetupWizard:Z
  
--    if-nez p1, :cond_f
-+    if-nez p1, :cond_15
+-    if-nez p1, :cond_e
++    if-nez p1, :cond_12
  
      iget-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsFromKnoxTwoStep:Z
  
--    if-nez p1, :cond_f
-+    if-nez p1, :cond_15
+-    if-nez p1, :cond_e
++    if-nez p1, :cond_12
  
      iget-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsFromKnoxFingerprintPlus:Z
  
--    if-nez p1, :cond_f
-+    if-nez p1, :cond_15
+-    if-nez p1, :cond_e
++    if-nez p1, :cond_12
  
      iget p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
-@@ -972,11 +1114,11 @@
+@@ -911,11 +1051,11 @@
+ 
+     move-result p1
+ 
+-    if-eqz p1, :cond_c
++    if-eqz p1, :cond_10
+ 
+-    goto :goto_1
++    goto :goto_8
+ 
+-    :cond_c
++    :cond_10
+     iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
+ 
+     iget v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
+@@ -924,19 +1064,19 @@
  
      move-result p1
  
 -    if-eqz p1, :cond_d
-+    if-eqz p1, :cond_13
- 
--    goto :goto_1
-+    goto :goto_6
- 
--    :cond_d
-+    :cond_13
-     iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
- 
-     iget v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
-@@ -985,22 +1127,22 @@
- 
-     move-result p1
- 
--    if-eqz p1, :cond_e
-+    if-eqz p1, :cond_14
++    if-eqz p1, :cond_11
  
      invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->launchConfirmLock()V
  
 -    return-void
-+    goto :goto_8
++    goto :goto_a
  
--    :cond_e
-+    :cond_14
+-    :cond_d
++    :cond_11
      invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->startBiometricsDisclaimer()V
  
 -    return-void
-+    goto :goto_8
++    goto :goto_a
  
--    :cond_f
+-    :cond_e
 -    :goto_1
-+    :cond_15
-+    :goto_6
++    :cond_12
++    :goto_8
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mFingerprintManager:Landroid/hardware/fingerprint/FingerprintManager;
  
--    if-eqz p1, :cond_14
-+    if-eqz p1, :cond_1b
- 
-     iget v1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
- 
-@@ -1008,13 +1150,13 @@
+     iget v0, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
+@@ -945,19 +1085,13 @@
  
      move-result p1
  
 -    if-eqz p1, :cond_10
-+    if-eqz p1, :cond_16
++    if-eqz p1, :cond_13
  
      iget-boolean p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mIsFromKnoxFingerprintPlus:Z
  
--    if-eqz p1, :cond_14
-+    if-eqz p1, :cond_1b
+-    if-eqz p1, :cond_f
+-
+-    goto :goto_2
+-
+-    :cond_f
+-    return-void
++    if-eqz p1, :cond_18
  
 -    :cond_10
-+    :cond_16
+-    :goto_2
++    :cond_13
      const-string p1, "[KNOX FINGERPRPINT] : nonFinger chooseLock CASE"
  
-     invoke-static {v0, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
-@@ -1027,7 +1169,7 @@
+     invoke-static {v1, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+@@ -970,7 +1104,7 @@
  
      move-result p1
  
 -    if-eqz p1, :cond_11
-+    if-eqz p1, :cond_17
++    if-eqz p1, :cond_14
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
  
-@@ -1037,20 +1179,20 @@
+@@ -980,20 +1114,20 @@
  
      move-result p1
  
 -    if-nez p1, :cond_12
-+    if-nez p1, :cond_18
++    if-nez p1, :cond_15
  
      iget p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
 -    if-eqz p1, :cond_12
-+    if-eqz p1, :cond_18
++    if-eqz p1, :cond_15
  
 -    :cond_11
-+    :cond_17
++    :cond_14
      iget p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mUserId:I
  
      invoke-static {p1}, Lcom/samsung/android/knox/SemPersonaManager;->isKnoxId(I)Z
@@ -2184,16 +2115,16 @@ index 70b1cc9a3..1f31a63fd 100644
      move-result p1
  
 -    if-eqz p1, :cond_13
-+    if-eqz p1, :cond_19
++    if-eqz p1, :cond_16
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
  
-@@ -1060,32 +1202,46 @@
+@@ -1003,31 +1137,40 @@
  
      move-result p1
  
 -    if-nez p1, :cond_13
-+    if-nez p1, :cond_19
++    if-nez p1, :cond_16
  
      iget-object p1, p0, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->mLockPatternUtils:Lcom/android/internal/widget/LockPatternUtils;
  
@@ -2203,44 +2134,37 @@ index 70b1cc9a3..1f31a63fd 100644
      move-result p1
  
 -    if-eqz p1, :cond_13
-+    if-eqz p1, :cond_19
++    if-eqz p1, :cond_16
  
 -    :cond_12
-+    :cond_18
++    :cond_15
      invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->launchConfirmLock()V
  
 -    return-void
-+    goto :goto_8
++    goto :goto_a
  
 -    :cond_13
-+    :cond_19
++    :cond_16
      invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->startBiometricsDisclaimer()V
  
--    :cond_14
 -    return-void
-+    goto :goto_8
++    goto :goto_a
  
--    :cond_15
--    :goto_2
-+    :cond_1a
-+    :goto_7
+-    :cond_14
+-    :goto_3
++    :cond_17
++    :goto_9
      invoke-virtual {p0}, Lcom/samsung/android/settings/biometrics/fingerprint/RegisterFingerprint;->startFingerprintRegistration()V
  
-+    :cond_1b
-+    :goto_8
++    :cond_18
++    :goto_a
      return-void
 +
-+    :goto_9
-+    if-eqz v3, :cond_1c
-+
++    :goto_b
 +    invoke-virtual {v3}, Landroid/os/Parcel;->recycle()V
-+
-+    :cond_1c
-+    if-eqz v4, :cond_1d
 +
 +    invoke-virtual {v4}, Landroid/os/Parcel;->recycle()V
 +
-+    :cond_1d
 +    throw p0
  .end method
  
