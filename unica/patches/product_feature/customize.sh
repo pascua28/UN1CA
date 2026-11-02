@@ -239,20 +239,8 @@ fi
 if $SOURCE_COMMON_SUPPORT_HDR_EFFECT; then
     if ! $TARGET_COMMON_SUPPORT_HDR_EFFECT; then
         SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT" --delete
-
-        APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
-            "$MODPATH/mdnie/hdr/SecSettings.apk/0001-Disable-HDR-Settings.patch"
-        APPLY_PATCH "system" "system/priv-app/SettingsProvider/SettingsProvider.apk" \
-            "$MODPATH/mdnie/hdr/SettingsProvider.apk/0001-Disable-HDR-Settings.patch"
-    else
-        if [ ! "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT")" ]; then
-            SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT" "TRUE"
-        fi
-    fi
-else
-    if $TARGET_COMMON_SUPPORT_HDR_EFFECT; then
         # TODO handle this condition
-        LOG_MISSING_PATCHES "SOURCE_COMMON_SUPPORT_HDR_EFFECT" "TARGET_COMMON_SUPPORT_HDR_EFFECT"
+        LOG_MISSING_PATCHES "TARGET_COMMON_SUPPORT_HDR_EFFECT"
     fi
 fi
 
@@ -289,7 +277,7 @@ if [[ "$SOURCE_FINGERPRINT_CONFIG_SENSOR" != "$TARGET_FINGERPRINT_CONFIG_SENSOR"
                     if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
                         if ! grep -q -r "IQtiComposer" "$WORK_DIR/vendor/etc/vintf"; then
                             # [b.lt #0x72914c] -> [nop]
-                            HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00712b03005400068052" "9f8a00711f2003d500068052"
+                            HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00710b02005401d9ff90" "9f8a00711f2003d500068052"
                         fi
                     fi
                     ADD_TO_WORK_DIR "a36xqnaxx" "system" "system/lib64/libandroid_runtime.so" 0 0 644 "u:object_r:system_lib_file:s0"
