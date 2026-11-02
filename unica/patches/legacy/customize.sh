@@ -469,7 +469,6 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
 fi
 
 # Support OMX hardware video codecs (pre-API 35)
-# - Replace COLOR_FormatYUV420Flexible with COLOR_FormatSurface/OMX_COLOR_FormatAndroidOpaque
 #   (https://android.googlesource.com/platform/frameworks/av/+/android-16.0.0_r2/media/libstagefright/omx/OMXNodeInstance.cpp#1687)
 # - Disable ACodec HEVC limitation for RECORDING_MODE_HDR10_PLUS/RECORDING_MODE_PRO_HDR10_PLUS
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
@@ -477,10 +476,10 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             grep -q -P -z '<MediaCodec\s[^>]*name="c2\.(?!android\.|sec\.)[^"]*"(?:(?!</?MediaCodec[\s>])[\s\S])*?="video/'; then
         PATCHED=true
         SMALI_PATCH "system" "system/app/MotionPhoto/MotionPhoto.apk" \
-            "smali/com/samsung/android/motionphoto/utils/v2/video/VideoTranscoder.smali" "replace" \
-            'configVideoEncoderParameters(Landroid/media/MediaFormat;Lcom/samsung/android/motionphoto/utils/v2/video/VideoTranscodingTask;)V' \
-            'const p2, 0x7f420888' \
-            'const p2, 0x7f000789'
+            "smali/com/samsung/android/motionphoto/utils/v2/video/transcoding/VideoTrackTranscoder.smali" "replace" \
+            'getVideoEncodingFormat(Lcom/samsung/android/motionphoto/utils/v2/video/VideoTranscodingTask;)Landroid/media/MediaFormat;' \
+            'const v1, 0x7f420888' \
+            'const v1, 0x7f000789'
         SMALI_PATCH "system" "system/app/MotionPhoto/MotionPhoto.apk" \
             "smali/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
             'configCodec(Lcom/samsung/android/sum/core/message/Message;)V' \
@@ -493,7 +492,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             HEX_PATCH "$WORK_DIR/system/system/lib/libstagefright.so" \
                 "aaea002879d1264c0620" "aaea002879e0264c0620"
         else
-            ABORT "No known patch available for the supplied libstagefright.so"
+            LOG "- No known patch available for the supplied libstagefright.so"
         fi
         if xxd -p -c 0 "$WORK_DIR/system/system/lib64/libstagefright.so" | grep -q "70690594205100347a9a40f9"; then
             HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
@@ -502,7 +501,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
                 "864d0594604d00347a9a40f9" "864d05941f2003d57a9a40f9"
         else
-            ABORT "No known patch available for the supplied libstagefright.so"
+            LOG "- No known patch available for the supplied libstagefright.so"
         fi
         if [ -f "$WORK_DIR/system/system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" ]; then
             SMALI_PATCH "system" "system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" \
@@ -519,8 +518,8 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
         SMALI_PATCH "system" "system/priv-app/vexfwk_service/vexfwk_service.apk" \
             "smali/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
             'configCodec(Lcom/samsung/android/sum/core/message/Message;)V' \
-            'const v3, 0x7f420888' \
-            'const v3, 0x7f000789'
+            'const v2, 0x7f420888' \
+            'const v2, 0x7f000789'
     fi
 fi
 
