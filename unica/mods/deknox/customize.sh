@@ -301,10 +301,6 @@ SMALI_PATCH "system_ext" "priv-app/SystemUI/SystemUI.apk" \
     "smali_classes4/com/samsung/android/knox/integrity/EnhancedAttestationPolicy.smali" "return" \
     'isMposSupported()Z' 'false'
 
-# SEC_PRODUCT_FEATURE_KNOX_SUPPORT_KNOXGUARD
-APPLY_PATCH "system" "system/framework/services.jar" \
-    "$MODPATH/knoxguard/services.jar/0001-Disable-KnoxGuard.patch"
-
 # SEC_PRODUCT_FEATURE_SECURITY_SUPPORT_KNOX_MATRIX_AI_PRIVACY
 APPLY_PATCH "system" "system/framework/framework.jar" \
     "$MODPATH/kmxai/framework.jar/0001-Nuke-Knox-Matrix-AI-Privacy.patch"
