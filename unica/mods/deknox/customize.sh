@@ -82,13 +82,6 @@ if [[ "$TARGET_OS_SINGLE_SYSTEM_IMAGE" == "qssi" ]]; then
     ADD_TO_WORK_DIR "$DONOR" "system" "system/lib64/service.incremental.so" 0 0 644 "u:object_r:system_lib_file:s0"
 fi
 
-if [[ "$TARGET_OS_SINGLE_SYSTEM_IMAGE" == "qssi" ]]; then
-    APPLY_PATCH "system" "system/framework/framework.jar" \
-        "$MODPATH/vold/framework.jar/0001-Add-token-argument-in-unlockCeStorage.patch"
-    APPLY_PATCH "system" "system/framework/services.jar" \
-        "$MODPATH/vold/services.jar/0001-Add-token-argument-in-unlockCeStorage.patch"
-fi
-
 unset DONOR
 
 DECODE_APK "system" "system/framework/services.jar"

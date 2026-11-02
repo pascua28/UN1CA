@@ -1,0 +1,4 @@
+id=vold
+name=unlockCeStorage Fix
+author=pascua28
+description=Fixes unlockCeStorage for <4.14 devices
