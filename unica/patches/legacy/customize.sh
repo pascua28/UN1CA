@@ -323,11 +323,12 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     EXTRACT_KERNEL_IMAGE
     if grep -q "Linux version 4.14" "$TMP_DIR/out/kernel"; then
         PATCHED=true
-        # [b.eq #0xXXXXXX] -> [nop]
+        # [cmp w8,w10] -> [cmp w0, #1]
         # - android::net::MobileBBController::hotspotOn(const std::string)
-        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f01096be0010054" "1f01096b1f2003d5"
+        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f010a6bc8fdfff0" "1f040071c8fdfff0"
+        # [b.eq #0xXXXXXX] -> [nop]
         # - android::net::MobileBBController::isMBBPathsPresent()
-        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f01096b20010054" "1f01096b1f2003d5"
+        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "20010054e0fdfff0" "1f2003d5e0fdfff0"
     fi
 fi
 
