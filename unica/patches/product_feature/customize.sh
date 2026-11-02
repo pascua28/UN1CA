@@ -414,11 +414,6 @@ if [[ "$SOURCE_LCD_CONFIG_CONTROL_AUTO_BRIGHTNESS" != "$TARGET_LCD_CONFIG_CONTRO
         "getBrightness()Ljava/lang/String;" \
         "$SOURCE_LCD_CONFIG_CONTROL_AUTO_BRIGHTNESS" \
         "$TARGET_LCD_CONFIG_CONTROL_AUTO_BRIGHTNESS"
-    SMALI_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
-        "smali_classes4/com/samsung/android/settings/Rune.smali" "replace" \
-        "<clinit>()V" \
-        "$SOURCE_LCD_CONFIG_CONTROL_AUTO_BRIGHTNESS" \
-        "$TARGET_LCD_CONFIG_CONTROL_AUTO_BRIGHTNESS"
 fi
 
 # SEC_PRODUCT_FEATURE_LCD_CONFIG_SEAMLESS_BRT
