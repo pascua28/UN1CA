@@ -1,104 +1,85 @@
-From 6430d2020768f31fb351314f75e5c15601289f07 Mon Sep 17 00:00:00 2001
+From 7f359bb6b60fa2c5255b3626b8801ca3cd6a2d6f Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Mon, 6 Oct 2025 14:35:37 +0200
+Date: Tue, 3 Nov 2026 15:22:21 +0800
 Subject: [PATCH] Allow custom PackageBlockListPolicy
 
 UN1CA: this patch is not complete! Please check unica/mods/blocklist/customize.sh for more info.
 ---
- .../server/pm/InstallPackageHelper.smali      | 14 ++--
- .../android/server/pm/ScanPackageUtils.smali  | 10 +--
+ .../server/pm/InstallPackageHelper.smali      | 14 ++---
+ .../pm/install/PackageBlockListPolicy$1.smali |  2 +-
  .../pm/install/PackageBlockListPolicy.smali   | 20 +-----
- .../server/pm/lifecycle/PmLifecycleImpl.smali | 64 ++-----------------
- 4 files changed, 18 insertions(+), 90 deletions(-)
+ .../server/pm/lifecycle/PmLifecycleImpl.smali | 63 +++----------------
+ 4 files changed, 14 insertions(+), 85 deletions(-)
 
 diff --git a/smali_classes2/com/android/server/pm/InstallPackageHelper.smali b/smali_classes2/com/android/server/pm/InstallPackageHelper.smali
-index d8893e3df..1ac76a316 100644
+index 0e6f96dc..90f11245 100644
 --- a/smali_classes2/com/android/server/pm/InstallPackageHelper.smali
 +++ b/smali_classes2/com/android/server/pm/InstallPackageHelper.smali
-@@ -21296,19 +21296,15 @@
-     goto/16 :goto_10
+@@ -22483,22 +22483,18 @@
+     .catchall {:try_start_4 .. :try_end_4} :catchall_0
  
-     :cond_4
--    sget-object v1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sIsRduDevice:Ljava/util/concurrent/atomic/AtomicBoolean;
+     :try_start_5
+-    sget-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sIsRduDevice:Ljava/util/concurrent/atomic/AtomicBoolean;
 -
--    invoke-virtual {v1}, Ljava/util/concurrent/atomic/AtomicBoolean;->get()Z
+-    invoke-virtual {v2}, Ljava/util/concurrent/atomic/AtomicBoolean;->get()Z
 -
--    move-result v1
-+    const/4 v1, 0x1
+-    move-result v2
++    const/4 v2, 0x1
  
-     if-eqz v1, :cond_7
+     if-nez v2, :cond_7
  
--    sget-object v1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sget-object v1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
+     goto :goto_3
  
-     if-nez v1, :cond_5
+     :cond_7
+-    sget-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
++    sget-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
  
--    const-string v1, "/system/etc/ldu_blocklist.xml"
-+    const-string v1, "/system/etc/unica_blocklist.xml"
+     if-nez v2, :cond_8
  
-     invoke-static {v1}, Lcom/samsung/android/server/pm/install/PmConfigParser;->parsePackages(Ljava/lang/String;)Ljava/util/List;
+-    const-string v2, "/system/etc/ldu_blocklist.xml"
++    const-string v2, "/system/etc/unica_blocklist.xml"
  
-@@ -21318,10 +21314,10 @@
+     invoke-static {v2}, Lcom/samsung/android/server/pm/install/PmConfigParser;->parsePackages(Ljava/lang/String;)Ljava/util/List;
  
-     invoke-direct {v2, v1}, Ljava/util/HashSet;-><init>(Ljava/util/Collection;)V
+@@ -22508,7 +22504,7 @@
  
--    sput-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sput-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
+     invoke-direct {v3, v2}, Ljava/util/HashSet;-><init>(Ljava/util/Collection;)V
  
-     :cond_5
--    sget-object v1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sget-object v1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
+-    sput-object v3, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
++    sput-object v3, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
  
-     invoke-virtual {v1, v15}, Ljava/util/HashSet;->contains(Ljava/lang/Object;)Z
+     :cond_8
+     sget-boolean v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBypassBlocklist:Z
+@@ -22520,7 +22516,7 @@
+     goto :goto_2
  
-diff --git a/smali_classes2/com/android/server/pm/ScanPackageUtils.smali b/smali_classes2/com/android/server/pm/ScanPackageUtils.smali
-index 5f3ff92c3..411d4af92 100644
---- a/smali_classes2/com/android/server/pm/ScanPackageUtils.smali
-+++ b/smali_classes2/com/android/server/pm/ScanPackageUtils.smali
-@@ -963,7 +963,7 @@
+     :cond_9
+-    sget-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
++    sget-object v2, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
  
-     iget-object v10, v1, Lcom/android/server/pm/ScanRequest;->mUser:Landroid/os/UserHandle;
+     invoke-virtual {v2, v1}, Ljava/util/HashSet;->contains(Ljava/lang/Object;)Z
  
--    sget-boolean v0, Lcom/samsung/android/rune/PMRune;->PM_LDU:Z
-+    const/4 v0, 0x1
+diff --git a/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy$1.smali b/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy$1.smali
+index c941e3a0..343b8234 100644
+--- a/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy$1.smali
++++ b/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy$1.smali
+@@ -23,7 +23,7 @@
+ .method public final onChange(Z)V
+     .locals 2
  
-     const-string/jumbo v14, "PackageManager"
+-    sget-object p1, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sIsRduDevice:Ljava/util/concurrent/atomic/AtomicBoolean;
++    const/4 p1, 0x1
  
-@@ -973,11 +973,11 @@
- 
-     move-result-object v0
- 
--    sget-object v11, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sget-object v11, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
- 
-     if-nez v11, :cond_0
- 
--    const-string v11, "/system/etc/ldu_blocklist.xml"
-+    const-string v11, "/system/etc/unica_blocklist.xml"
- 
-     invoke-static {v11}, Lcom/samsung/android/server/pm/install/PmConfigParser;->parsePackages(Ljava/lang/String;)Ljava/util/List;
- 
-@@ -987,10 +987,10 @@
- 
-     invoke-direct {v12, v11}, Ljava/util/HashSet;-><init>(Ljava/util/Collection;)V
- 
--    sput-object v12, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sput-object v12, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
- 
-     :cond_0
--    sget-object v11, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sLduBlocklist:Ljava/util/HashSet;
-+    sget-object v11, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy;->sBlocklist:Ljava/util/HashSet;
- 
-     invoke-virtual {v11, v0}, Ljava/util/HashSet;->contains(Ljava/lang/Object;)Z
+     iget-object p0, p0, Lcom/samsung/android/server/pm/install/PackageBlockListPolicy$1;->val$cr:Landroid/content/ContentResolver;
  
 diff --git a/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy.smali b/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy.smali
-index e6a229638..eeed61f8e 100644
+index 96ad4013..5671169d 100644
 --- a/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy.smali
 +++ b/smali_classes2/com/samsung/android/server/pm/install/PackageBlockListPolicy.smali
-@@ -4,22 +4,4 @@
- 
- 
+@@ -6,22 +6,4 @@
  # static fields
+ .field public static sBypassBlocklist:Z = false
+ 
 -.field public static final sIsRduDevice:Ljava/util/concurrent/atomic/AtomicBoolean;
 -
 -.field public static sLduBlocklist:Ljava/util/HashSet;
@@ -120,13 +101,13 @@ index e6a229638..eeed61f8e 100644
 -.end method
 +.field public static sBlocklist:Ljava/util/HashSet;
 diff --git a/smali_classes2/com/samsung/android/server/pm/lifecycle/PmLifecycleImpl.smali b/smali_classes2/com/samsung/android/server/pm/lifecycle/PmLifecycleImpl.smali
-index 91512edd5..f87336b76 100644
+index 6c457608..4c5dcf89 100644
 --- a/smali_classes2/com/samsung/android/server/pm/lifecycle/PmLifecycleImpl.smali
 +++ b/smali_classes2/com/samsung/android/server/pm/lifecycle/PmLifecycleImpl.smali
-@@ -2193,56 +2193,6 @@
+@@ -3214,55 +3214,6 @@
      invoke-virtual {v0, v2}, Landroid/app/job/JobScheduler;->schedule(Landroid/app/job/JobInfo;)I
  
-     :goto_14
+     :goto_10
 -    iget-object v0, v1, Lcom/samsung/android/server/pm/lifecycle/PmLifecycleImpl;->mInjector:Lcom/android/server/pm/PackageManagerServiceInjector;
 -
 -    iget-object v2, v0, Lcom/android/server/pm/PackageManagerServiceInjector;->mContext:Landroid/content/Context;
@@ -153,16 +134,16 @@ index 91512edd5..f87336b76 100644
 -
 -    const/4 v7, 0x1
 -
--    if-ne v6, v7, :cond_18
+-    if-ne v6, v7, :cond_16
 -
 -    const/4 v6, 0x1
 -
--    goto :goto_15
+-    goto :goto_11
 -
--    :cond_18
+-    :cond_16
 -    move v6, v5
 -
--    :goto_15
+-    :goto_11
 -    invoke-virtual {v3, v6}, Ljava/util/concurrent/atomic/AtomicBoolean;->set(Z)V
 -
 -    invoke-static {v4}, Landroid/provider/Settings$Secure;->getUriFor(Ljava/lang/String;)Landroid/net/Uri;
@@ -176,55 +157,54 @@ index 91512edd5..f87336b76 100644
 -    const/4 v6, -0x1
 -
 -    invoke-virtual {v2, v3, v5, v4, v6}, Landroid/content/ContentResolver;->registerContentObserver(Landroid/net/Uri;ZLandroid/database/ContentObserver;I)V
--
+ 
      iget-object v0, v1, Lcom/samsung/android/server/pm/lifecycle/PmLifecycleImpl;->mATCommandReceiver:Lcom/samsung/android/server/pm/mm/MaintenanceModeManager$ATCommandReceiver;
  
-     iget-object v2, v1, Lcom/samsung/android/server/pm/lifecycle/PmLifecycleImpl;->mInjector:Lcom/android/server/pm/PackageManagerServiceInjector;
-@@ -2284,7 +2234,7 @@
-     :cond_19
+@@ -3305,7 +3256,7 @@
+     :cond_17
      const/4 v3, 0x1
  
--    goto :goto_16
-+    goto :goto_15
+-    goto :goto_12
++    goto :goto_11
  
-     :cond_1a
+     :cond_18
      const-string/jumbo v2, "sys.maintenance_mode.boot_attempt_count"
-@@ -2341,7 +2291,7 @@
+@@ -3362,7 +3313,7 @@
  
      invoke-virtual {v0, v2}, Landroid/os/Handler;->post(Ljava/lang/Runnable;)Z
  
--    :goto_16
-+    :goto_15
+-    :goto_12
++    :goto_11
      const-string/jumbo v0, "com.salab.issuetracker"
  
-     :try_start_a
-@@ -2382,21 +2332,21 @@
+     :try_start_6
+@@ -3401,21 +3352,21 @@
  
-     move v2, v3
+     if-eqz v0, :cond_19
  
--    goto :goto_18
-+    goto :goto_17
+-    goto :goto_14
++    goto :goto_13
  
      :catch_3
-     :cond_1b
--    :goto_17
-+    :goto_16
-     move v2, v5
+     :cond_19
+-    :goto_13
++    :goto_12
+     move v3, v5
  
--    goto :goto_18
-+    goto :goto_17
+-    goto :goto_14
++    goto :goto_13
  
      :catch_4
      const/4 v5, 0x0
  
--    goto :goto_17
-+    goto :goto_16
+-    goto :goto_13
++    goto :goto_12
  
--    :goto_18
-+    :goto_17
-     iput-boolean v2, v1, Lcom/samsung/android/server/pm/lifecycle/PmLifecycleImpl;->mIsUserTrial:Z
+-    :goto_14
++    :goto_13
+     iput-boolean v3, v1, Lcom/samsung/android/server/pm/lifecycle/PmLifecycleImpl;->mIsUserTrial:Z
  
      return-void
 -- 
-2.51.0
+2.54.0
 
