@@ -1,6 +1,6 @@
-From 8f3aae194f364270111c25e178c30452d6f16cf4 Mon Sep 17 00:00:00 2001
+From 364365272735ba87cdd1e87e67e73a1bce77efd0 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Fri, 17 Oct 2025 11:57:50 +0200
+Date: Tue, 3 Nov 2026 15:49:21 +0800
 Subject: [PATCH] Introduce CscFeatureHooks
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] Introduce CscFeatureHooks
  .../android/feature/SemCscFeature.smali       | 107 ++++-
  .../io/mesalabs/unica/CscFeatureHooks.smali   | 380 ++++++++++++++++++
  3 files changed, 477 insertions(+), 20 deletions(-)
- create mode 100644 smali_classes6/io/mesalabs/unica/CscFeatureHooks.smali
+ create mode 100644 smali_classes7/io/mesalabs/unica/CscFeatureHooks.smali
 
 diff --git a/smali_classes3/android/os/SemSystemProperties.smali b/smali_classes3/android/os/SemSystemProperties.smali
 index d40468a0..1238450f 100644
@@ -39,10 +39,10 @@ index d40468a0..1238450f 100644
  .end method
  
 diff --git a/smali_classes6/com/samsung/android/feature/SemCscFeature.smali b/smali_classes6/com/samsung/android/feature/SemCscFeature.smali
-index 41421590..0138a30f 100644
+index 41007ef5..733308d8 100644
 --- a/smali_classes6/com/samsung/android/feature/SemCscFeature.smali
 +++ b/smali_classes6/com/samsung/android/feature/SemCscFeature.smali
-@@ -1873,6 +1873,19 @@
+@@ -1879,6 +1879,19 @@
  .method public whitelist getBoolean(Ljava/lang/String;)Z
      .locals 4
  
@@ -62,7 +62,7 @@ index 41421590..0138a30f 100644
      const-string v0, "[getBoolean] tag : "
  
      const/4 v1, 0x0
-@@ -1884,7 +1897,7 @@
+@@ -1890,7 +1903,7 @@
  
      sget-boolean v2, Lcom/samsung/android/feature/SemCscFeature;->DEBUG:Z
  
@@ -71,7 +71,7 @@ index 41421590..0138a30f 100644
  
      const-string v2, "SemCscFeature"
  
-@@ -1906,8 +1919,8 @@
+@@ -1912,8 +1925,8 @@
  
      invoke-static {v2, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
  
@@ -82,7 +82,7 @@ index 41421590..0138a30f 100644
  
      invoke-static {p0}, Ljava/lang/Boolean;->parseBoolean(Ljava/lang/String;)Z
  
-@@ -1918,13 +1931,26 @@
+@@ -1924,13 +1937,26 @@
      return p0
  
      :catch_0
@@ -110,7 +110,7 @@ index 41421590..0138a30f 100644
      const-string v0, "[getBoolean] tag : "
  
      :try_start_0
-@@ -1934,7 +1960,7 @@
+@@ -1940,7 +1966,7 @@
  
      sget-boolean v1, Lcom/samsung/android/feature/SemCscFeature;->DEBUG:Z
  
@@ -119,7 +119,7 @@ index 41421590..0138a30f 100644
  
      const-string v1, "SemCscFeature"
  
-@@ -1962,8 +1988,8 @@
+@@ -1968,8 +1994,8 @@
  
      invoke-static {v1, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
  
@@ -130,7 +130,7 @@ index 41421590..0138a30f 100644
  
      invoke-static {p0}, Ljava/lang/Boolean;->parseBoolean(Ljava/lang/String;)Z
  
-@@ -1974,7 +2000,7 @@
+@@ -1980,7 +2006,7 @@
      return p0
  
      :catch_0
@@ -139,7 +139,7 @@ index 41421590..0138a30f 100644
      return p2
  .end method
  
-@@ -2001,6 +2027,19 @@
+@@ -2007,6 +2033,19 @@
  .method public whitelist getInt(Ljava/lang/String;)I
      .locals 4
  
@@ -159,7 +159,7 @@ index 41421590..0138a30f 100644
      const-string v0, "[getInt] tag : "
  
      const/4 v1, -0x1
-@@ -2012,7 +2051,7 @@
+@@ -2018,7 +2057,7 @@
  
      sget-boolean v2, Lcom/samsung/android/feature/SemCscFeature;->DEBUG:Z
  
@@ -168,7 +168,7 @@ index 41421590..0138a30f 100644
  
      const-string v2, "SemCscFeature"
  
-@@ -2034,8 +2073,8 @@
+@@ -2040,8 +2079,8 @@
  
      invoke-static {v2, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
  
@@ -179,7 +179,7 @@ index 41421590..0138a30f 100644
  
      invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-@@ -2046,13 +2085,26 @@
+@@ -2052,13 +2091,26 @@
      return p0
  
      :catch_0
@@ -207,7 +207,7 @@ index 41421590..0138a30f 100644
      const-string v0, "[getInt] tag : "
  
      :try_start_0
-@@ -2062,7 +2114,7 @@
+@@ -2068,7 +2120,7 @@
  
      sget-boolean v1, Lcom/samsung/android/feature/SemCscFeature;->DEBUG:Z
  
@@ -216,7 +216,7 @@ index 41421590..0138a30f 100644
  
      const-string v1, "SemCscFeature"
  
-@@ -2090,8 +2142,8 @@
+@@ -2096,8 +2148,8 @@
  
      invoke-static {v1, p1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
  
@@ -227,7 +227,7 @@ index 41421590..0138a30f 100644
  
      invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-@@ -2102,7 +2154,7 @@
+@@ -2108,7 +2160,7 @@
      return p0
  
      :catch_0
@@ -236,7 +236,7 @@ index 41421590..0138a30f 100644
      return p2
  .end method
  
-@@ -2169,6 +2221,12 @@
+@@ -2175,6 +2227,12 @@
  .method public whitelist getString(Ljava/lang/String;)Ljava/lang/String;
      .locals 4
  
@@ -249,7 +249,7 @@ index 41421590..0138a30f 100644
      const-string v0, ""
  
      const-string v1, "[getString] tag : "
-@@ -2217,6 +2275,15 @@
+@@ -2223,6 +2281,15 @@
  .method public whitelist getString(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
      .locals 3
  
@@ -265,7 +265,7 @@ index 41421590..0138a30f 100644
      const-string v0, "[getString] tag : "
  
      :try_start_0
-@@ -2226,7 +2293,7 @@
+@@ -2232,7 +2299,7 @@
  
      sget-boolean v1, Lcom/samsung/android/feature/SemCscFeature;->DEBUG:Z
  
@@ -274,7 +274,7 @@ index 41421590..0138a30f 100644
  
      const-string v1, "SemCscFeature"
  
-@@ -2256,13 +2323,13 @@
+@@ -2262,13 +2329,13 @@
      :try_end_0
      .catch Ljava/lang/Exception; {:try_start_0 .. :try_end_0} :catch_0
  
@@ -291,11 +291,11 @@ index 41421590..0138a30f 100644
      return-object p2
  .end method
  
-diff --git a/smali_classes6/io/mesalabs/unica/CscFeatureHooks.smali b/smali_classes6/io/mesalabs/unica/CscFeatureHooks.smali
+diff --git a/smali_classes7/io/mesalabs/unica/CscFeatureHooks.smali b/smali_classes7/io/mesalabs/unica/CscFeatureHooks.smali
 new file mode 100644
 index 00000000..37d44bdc
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/CscFeatureHooks.smali
++++ b/smali_classes7/io/mesalabs/unica/CscFeatureHooks.smali
 @@ -0,0 +1,380 @@
 +.class public final Lio/mesalabs/unica/CscFeatureHooks;
 +.super Ljava/lang/Object;
@@ -678,5 +678,5 @@ index 00000000..37d44bdc
 +    return-object v0
 +.end method
 -- 
-2.51.0
+2.54.0
 
