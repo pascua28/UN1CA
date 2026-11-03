@@ -1,0 +1,126 @@
+From 04800201599535aa23ad63035e7518cacdb87d95 Mon Sep 17 00:00:00 2001
+From: Samuel Pascua <pascua.samuel.14@gmail.com>
+Date: Fri, 5 Jun 2026 18:33:55 +0800
+Subject: [PATCH] Implement GrdmIcccManagerService
+
+---
+ .../server/GrdmIcccManagerService.smali       | 107 ++++++++++++++++++
+ 1 file changed, 107 insertions(+)
+ create mode 100644 smali/com/android/server/GrdmIcccManagerService.smali
+
+diff --git a/smali/com/android/server/GrdmIcccManagerService.smali b/smali/com/android/server/GrdmIcccManagerService.smali
+new file mode 100644
+index 00000000..ea7f4bf5
+--- /dev/null
++++ b/smali/com/android/server/GrdmIcccManagerService.smali
+@@ -0,0 +1,107 @@
++.class public Lcom/android/server/GrdmIcccManagerService;
++.super Lcom/samsung/android/icccgrdm/IGrdmIntegrityControlCheckCenter$Stub;
++.source "qb/109659291 3187984a15d955efbaf8f58ebef5477aed6a1c4a8f7f66f239344ddded5ab7d5"
++
++
++# static fields
++.field public static mContext:Landroid/content/Context;
++
++
++# direct methods
++.method public static native grdm_iccc_attestation_platform([B)[B
++.end method
++
++.method public static native grdm_iccc_load()I
++.end method
++
++.method public static native grdm_iccc_unload()I
++.end method
++
++
++# virtual methods
++.method public final declared-synchronized grdmSetAttestationData([B)[B
++    .locals 4
++
++    monitor-enter p0
++
++    :try_start_0
++    const-string v0, "GrdmIcccManagerService"
++
++    const-string/jumbo v1, "grdmSetAttestationData"
++
++    invoke-static {v0, v1}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
++
++    invoke-static {}, Landroid/os/Binder;->getCallingPid()I
++
++    move-result v0
++
++    const-string v1, "GrdmIcccManagerService"
++
++    const-string/jumbo v2, "getCallerPackageName"
++
++    invoke-static {v1, v2}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
++    :try_end_0
++    .catchall {:try_start_0 .. :try_end_0} :catchall_0
++
++    const/4 v1, 0x0
++
++    :try_start_1
++    sget-object v2, Lcom/android/server/GrdmIcccManagerService;->mContext:Landroid/content/Context;
++
++    const-string/jumbo v3, "activity"
++
++    invoke-virtual {v2, v3}, Landroid/content/Context;->getSystemService(Ljava/lang/String;)Ljava/lang/Object;
++
++    move-result-object v2
++
++    check-cast v2, Landroid/app/ActivityManager;
++
++    invoke-virtual {v2, v0}, Landroid/app/ActivityManager;->getPackageFromAppProcesses(I)Ljava/lang/String;
++
++    move-result-object v0
++    :try_end_1
++    .catch Ljava/lang/Exception; {:try_start_1 .. :try_end_1} :catch_0
++    .catchall {:try_start_1 .. :try_end_1} :catchall_0
++
++    goto :goto_0
++
++    :catch_0
++    move-object v0, v1
++
++    :goto_0
++    :try_start_2
++    const-string/jumbo v2, "com.samsung.android.knox.attestation"
++
++    invoke-virtual {v2, v0}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
++
++    move-result v0
++
++    if-eqz v0, :cond_0
++
++    invoke-static {p1}, Lcom/android/server/GrdmIcccManagerService;->grdm_iccc_attestation_platform([B)[B
++
++    move-result-object v1
++    :try_end_2
++    .catchall {:try_start_2 .. :try_end_2} :catchall_0
++
++    goto :goto_1
++
++    :catchall_0
++    move-exception p1
++
++    goto :goto_2
++
++    :cond_0
++    :goto_1
++    monitor-exit p0
++
++    return-object v1
++
++    :goto_2
++    :try_start_3
++    monitor-exit p0
++    :try_end_3
++    .catchall {:try_start_3 .. :try_end_3} :catchall_0
++
++    throw p1
++.end method
+-- 
+2.54.0
+

@@ -40,9 +40,7 @@ ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib64/libhwui.so" 0 0 644 "u:object_r:
 LOG_STEP_IN "- Adding HIDL face biometrics libs"
 ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib/android.hardware.biometrics.face@1.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
 ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib/vendor.samsung.hardware.biometrics.face@2.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
-if [ "$TARGET_PLATFORM_SDK_VERSION" -ge "34" ]; then
-    ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib/vendor.samsung.hardware.biometrics.face@3.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
-fi
+ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib/vendor.samsung.hardware.biometrics.face@3.0.so" 0 0 644 "u:object_r:system_lib_file:s0"
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Adding keymaster 4.0 libs"
@@ -63,6 +61,31 @@ DELETE_FROM_WORK_DIR "system" "system/lib64/libdk_native_keymint.so"
 ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib64/libdk_native_keymaster.so" 0 0 644 "u:object_r:system_lib_file:s0"
 DELETE_FROM_WORK_DIR "system" "system/lib64/vendor.samsung.hardware.keymint-V1-ndk.so"
 LOG_STEP_OUT
+
+if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
+    ADD_TO_WORK_DIR "a73xqxx" "vendor" "bin/hw/vendor.samsung.hardware.light-service" 0 2000 755 "u:object_r:hal_light_default_exec:s0"
+fi
+
+if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "34" ]; then
+    DELETE_FROM_WORK_DIR "vendor" "bin/hw/vendor.samsung.hardware.biometrics.face@2.0-service"
+    DELETE_FROM_WORK_DIR "vendor" "etc/init/vendor.samsung.hardware.biometrics.face@2.0-service.rc"
+    ADD_TO_WORK_DIR "a73xqxx" "vendor" "bin/hw/vendor.samsung.hardware.biometrics.face@3.0-service" 0 2000 755 "u:object_r:hal_face_default_exec:s0"
+    ADD_TO_WORK_DIR "a73xqxx" "vendor" "etc/init/vendor.samsung.hardware.biometrics.face@3.0-service.rc" 0 0 644 "u:object_r:vendor_configs_file:s0"
+    ADD_TO_WORK_DIR "a73xqxx" "vendor" "lib/vendor.samsung.hardware.biometrics.face@3.0.so" 0 0 644 "u:object_r:vendor_file:s0"
+    ADD_TO_WORK_DIR "a73xqxx" "vendor" "lib64/vendor.samsung.hardware.biometrics.face@3.0.so" 0 0 644 "u:object_r:vendor_file:s0"
+    EVAL "sed -i '/<name>vendor\.samsung\.hardware\.biometrics\.face<\/name>/,/<fqname>@2\.0::ISehBiometricsFace\/default<\/fqname>/c\\
+        <name>vendor.samsung.hardware.biometrics.face</name>\\
+        <transport>hwbinder</transport>\\
+        <version>3.0</version>\\
+        <version>2.0</version>\\
+        <interface>\\
+            <name>ISehBiometricsFace</name>\\
+            <instance>default</instance>\\
+        </interface>\\
+        <fqname>@2.0::ISehBiometricsFace/default</fqname>\\
+        <fqname>@3.0::ISehBiometricsFace/default</fqname>
+    ' \"$WORK_DIR/vendor/etc/vintf/\"*.xml"
+fi
 
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "34" ]; then
     ADD_TO_WORK_DIR "a73xqxx" "vendor" "bin/hw/wpa_supplicant" 0 2000 755 "u:object_r:hal_wifi_supplicant_default_exec:s0"

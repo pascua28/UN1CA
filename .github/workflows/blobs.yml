@@ -17,12 +17,24 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - module: "Galaxy A17 5G (a17xxx)"
+            device: "a17xxx"
+            firmware: "SM-A176B/INS/350042791234568"
+          - module: "Galaxy A36 5G (a36xqnaxx)"
+            path: "prebuilts/samsung/a36xqnaxx"
+            firmware: "SM-A366E/EUX/355838611234562"
           - module: "Galaxy A52 (a52qnsxx)"
             device: "a52qnsxx"
             firmware: "SM-A525F/EUX/352938771234569"
           - module: "Galaxy A53 5G (a53xtfn)"
             device: "a53xtfn"
             firmware: "SM-S536DL/TFA/352574701234567"
+          - module: "Galaxy A54 5G (a54xnsxx)"
+            device: "a54xnsxx"
+            firmware: "SM-A546E/EGY/350090711234564"
+          - module: "Galaxy A56 5G (a56xnaxx)"
+            device: "a56xnaxx"
+            firmware: "SM-A566B/EUX/352371191234565"
           - module: "Galaxy A73 5G (a73xqxx)"
             device: "a73xqxx"
             firmware: "SM-A736B/XME/352828291234563"
@@ -38,6 +50,12 @@ jobs:
           - module: "Galaxy Tab A9+ 5G (gta9pxxx)"
             device: "gta9pxxx"
             firmware: "SM-X216B/EUX/352862571234563"
+          - module: "Galaxy Tab S11 5G (gts11xx)"
+            device: "gts11xx"
+            firmware: "SM-X736B/EUX/R52Y8065XJM"
+          - module: "Galaxy S25+ (pa2qxxx)"
+            device: "pa2qxxx"
+            firmware: "SM-S936B/EUX/350634601234562"
           - module: "Galaxy Jump3 (m44xktt)"
             device: "m44xktt"
             firmware: "SM-M446K/KTC/350454001234561"
@@ -47,6 +65,9 @@ jobs:
           - module: "Galaxy S21 FE 5G (Exynos) (r9sxxx)"
             device: "r9sxxx"
             firmware: "SM-G990E/THL/355798871234563"
+          - module: "Galaxy S23 FE (r11sxxx)"
+            device: "r11sxxx"
+            firmware: "SM-S711B/EUX/358615311234564"
 
     steps:
       - name: Checkout repo
@@ -76,7 +97,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
             attr ccache clang ffmpeg libbrotli-dev libbz2-dev \
             libgtest-dev libprotobuf-dev libunwind-dev libpcre2-dev \
-            libzstd-dev linux-modules-extra-$(uname -r) lld protobuf-compiler webp
+            libzstd-dev lld protobuf-compiler webp
           sudo modprobe erofs f2fs
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"

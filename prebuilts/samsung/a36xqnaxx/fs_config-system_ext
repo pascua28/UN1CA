@@ -1,0 +1,4 @@
+ 0 0 755 capabilities=0x0
+system_ext/priv-app 0 0 755 capabilities=0x0
+system_ext/priv-app/SystemUI 0 0 755 capabilities=0x0
+system_ext/priv-app/SystemUI/SystemUI.apk 0 0 755 capabilities=0x0
