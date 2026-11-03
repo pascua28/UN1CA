@@ -971,7 +971,7 @@ fi
 # SEC_PRODUCT_FEATURE_WLAN_SUPPORT_MOBILEAP_DUALAP
 if ! $SOURCE_WLAN_SUPPORT_MOBILEAP_DUALAP; then
     if $TARGET_WLAN_SUPPORT_MOBILEAP_DUALAP; then
-        ADD_TO_WORK_DIR "dm1qxxx" "product" "overlay/SoftapOverlayDualAp/SoftapOverlayDualAp.apk" 0 0 644 "u:object_r:system_file:s0"
+        ADD_TO_WORK_DIR "$SOURCE_FIRMWARE" "product" "overlay/SoftapOverlayDualAp/SoftapOverlayDualAp.apk" 0 0 644 "u:object_r:system_file:s0"
 
         APPLY_PATCH "system" "system/framework/semwifi-service.jar" \
             "$MODPATH/wifi/dualap/semwifi-service.jar/0001-Enable-MOBILEAP_DUALAP-support.patch"
