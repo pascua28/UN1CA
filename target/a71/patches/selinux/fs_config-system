@@ -1,0 +1,6 @@
+system 0 0 755 capabilities=0x0
+system/etc 0 0 755 capabilities=0x0
+system/etc/selinux 0 0 755 capabilities=0x0
+system/etc/selinux/mapping 0 0 755 capabilities=0x0
+system/etc/selinux/mapping/30.0.cil 0 0 644 capabilities=0x0
+system/etc/selinux/mapping/30.0.compat.cil 0 0 644 capabilities=0x0
