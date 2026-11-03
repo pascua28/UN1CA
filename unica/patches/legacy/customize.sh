@@ -149,48 +149,6 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     fi
 fi
 
-# Support legacy Face HAL (pre-API 34)
-if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "34" ]; then
-    if [ ! -f "$WORK_DIR/vendor/bin/hw/vendor.samsung.hardware.biometrics.face@3.0-service" ]; then
-        PATCHED=true
-        APPLY_PATCH "system" "system/framework/services.jar" \
-            "$MODPATH/face/services.jar/0001-Fallback-to-Face-HIDL-2.0.patch"
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali/com/android/server/biometrics/sensors/face/hidl/HidlToAidlCallbackConverter.smali" "replaceall" \
-            "V3_0" \
-            "V2_0" \
-            > /dev/null
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali/com/android/server/biometrics/sensors/face/hidl/TestHal.smali" "replaceall" \
-            "V3_0" \
-            "V2_0" \
-            > /dev/null
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali/com/android/server/biometrics/sensors/face/aidl/SemFaceServiceExImpl\$\$ExternalSyntheticLambda6.smali" "remove"
-        LOG "- Removing \"smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFace.smali\" from /system/system/framework/services.jar"
-        EVAL "rm \"$APKTOOL_DIR/system/framework/services.jar/smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFace.smali\""
-        LOG "- Removing \"smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFace\$Proxy.smali\" from /system/system/framework/services.jar"
-        EVAL "rm \"$APKTOOL_DIR/system/framework/services.jar/smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFace\\\$Proxy.smali\""
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFace\$Stub\$1.smali" "remove"
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFaceClientCallback\$Proxy.smali" "remove"
-        SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/vendor/samsung/hardware/biometrics/face/V3_0/ISehBiometricsFaceClientCallback.smali" "remove"
-    fi
-fi
-
-# Support legacy SehLights HAL (pre-API 35)
-# - Check for [lsr wD, wS, #0x18] to determine if the newer HAL is already in place
-if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
-    if [ -f "$WORK_DIR/vendor/bin/hw/vendor.samsung.hardware.light-service" ] && \
-            ! xxd -p -c 4 "$WORK_DIR/vendor/bin/hw/vendor.samsung.hardware.light-service" | grep -q "1853$"; then
-        PATCHED=true
-        APPLY_PATCH "system" "system/framework/services.jar" \
-            "$MODPATH/lights/services.jar/0001-Backport-legacy-SehLights-HAL-code.patch"
-    fi
-fi
-
 # Ensure config_num_physical_slots is configured (pre-API 36)
 # https://android.googlesource.com/platform/frameworks/opt/telephony/+/42e37234cee15c9f3fcfac0532110abfc8843b99%5E%21/#F0
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
@@ -198,8 +156,17 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             ! grep -q "ro.telephony.sim_slots.count" "$WORK_DIR/vendor/bin/secril_config_svc" && \
             ! grep -q -r "config_num_physical_slots" "$WORK_DIR/vendor/overlay"; then
         PATCHED=true
-        APPLY_PATCH "system" "system/framework/telephony-common.jar" \
-            "$MODPATH/ril/telephony-common.jar/0001-Backport-legacy-UiccController-code.patch"
+        DECODE_APK "system" "system/framework/telephony-common.jar"
+        if grep -q -F 'const-string v4, "ro.vendor.api_level"' \
+            "$APKTOOL_DIR/system/framework/telephony-common.jar/smali/com/android/internal/telephony/uicc/UiccController.smali" && \
+            grep -q -F 'const-string v6, "Adjusting numPhysicalSlots for firstApiLevel = "' \
+            "$APKTOOL_DIR/system/framework/telephony-common.jar/smali/com/android/internal/telephony/uicc/UiccController.smali"; then
+           LOG "- Skipping uicc patch"
+        else
+            PATCHED=true
+            APPLY_PATCH "system" "system/framework/telephony-common.jar" \
+                "$MODPATH/ril/telephony-common.jar/0001-Backport-legacy-UiccController-code.patch"
+        fi
     fi
 fi
 
@@ -314,11 +281,12 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     EXTRACT_KERNEL_IMAGE
     if grep -q "Linux version 4.14" "$TMP_DIR/out/kernel"; then
         PATCHED=true
-        # [b.eq #0xXXXXXX] -> [nop]
+        # [cmp w8,w10] -> [cmp w0, #1]
         # - android::net::MobileBBController::hotspotOn(const std::string)
-        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f01096be0010054" "1f01096b1f2003d5"
+        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f010a6bc8fdfff0" "1f040071c8fdfff0"
+        # [b.eq #0xXXXXXX] -> [nop]
         # - android::net::MobileBBController::isMBBPathsPresent()
-        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "1f01096b20010054" "1f01096b1f2003d5"
+        HEX_PATCH "$WORK_DIR/system/system/bin/netd" "20010054e0fdfff0" "1f2003d5e0fdfff0"
     fi
 fi
 
@@ -329,7 +297,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             ! grep -q -r "IQtiComposer" "$WORK_DIR/vendor/etc/vintf"; then
         PATCHED=true
         # [b.lt #0x729be8] -> [nop]
-        HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00712b03005400068052" "9f8a00711f2003d500068052"
+        HEX_PATCH "$WORK_DIR/system/system/bin/surfaceflinger" "9f8a00710b020054e1d8ffb0" "9f8a00711f2003d5e1d8ffb0"
     fi
 fi
 
@@ -460,7 +428,6 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
 fi
 
 # Support OMX hardware video codecs (pre-API 35)
-# - Replace COLOR_FormatYUV420Flexible with COLOR_FormatSurface/OMX_COLOR_FormatAndroidOpaque
 #   (https://android.googlesource.com/platform/frameworks/av/+/android-16.0.0_r2/media/libstagefright/omx/OMXNodeInstance.cpp#1687)
 # - Disable ACodec HEVC limitation for RECORDING_MODE_HDR10_PLUS/RECORDING_MODE_PRO_HDR10_PLUS
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
@@ -468,10 +435,10 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             grep -q -P -z '<MediaCodec\s[^>]*name="c2\.(?!android\.|sec\.)[^"]*"(?:(?!</?MediaCodec[\s>])[\s\S])*?="video/'; then
         PATCHED=true
         SMALI_PATCH "system" "system/app/MotionPhoto/MotionPhoto.apk" \
-            "smali/com/samsung/android/motionphoto/utils/v2/video/VideoTranscoder.smali" "replace" \
-            'configVideoEncoderParameters(Landroid/media/MediaFormat;Lcom/samsung/android/motionphoto/utils/v2/video/VideoTranscodingTask;)V' \
-            'const p2, 0x7f420888' \
-            'const p2, 0x7f000789'
+            "smali/com/samsung/android/motionphoto/utils/v2/video/transcoding/VideoTrackTranscoder.smali" "replace" \
+            'getVideoEncodingFormat(Lcom/samsung/android/motionphoto/utils/v2/video/VideoTranscodingTask;)Landroid/media/MediaFormat;' \
+            'const v1, 0x7f420888' \
+            'const v1, 0x7f000789'
         SMALI_PATCH "system" "system/app/MotionPhoto/MotionPhoto.apk" \
             "smali/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
             'configCodec(Lcom/samsung/android/sum/core/message/Message;)V' \
@@ -484,7 +451,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             HEX_PATCH "$WORK_DIR/system/system/lib/libstagefright.so" \
                 "aaea002879d1264c0620" "aaea002879e0264c0620"
         else
-            ABORT "No known patch available for the supplied libstagefright.so"
+            LOG "- No known patch available for the supplied libstagefright.so"
         fi
         if xxd -p -c 0 "$WORK_DIR/system/system/lib64/libstagefright.so" | grep -q "70690594205100347a9a40f9"; then
             HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
@@ -493,7 +460,7 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
                 "864d0594604d00347a9a40f9" "864d05941f2003d57a9a40f9"
         else
-            ABORT "No known patch available for the supplied libstagefright.so"
+            LOG "- No known patch available for the supplied libstagefright.so"
         fi
         if [ -f "$WORK_DIR/system/system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" ]; then
             SMALI_PATCH "system" "system/priv-app/GlobalPostProcMgr/GlobalPostProcMgr.apk" \
@@ -510,8 +477,8 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
         SMALI_PATCH "system" "system/priv-app/vexfwk_service/vexfwk_service.apk" \
             "smali/com/samsung/android/sum/core/filter/EncoderFilter.smali" "replace" \
             'configCodec(Lcom/samsung/android/sum/core/message/Message;)V' \
-            'const v3, 0x7f420888' \
-            'const v3, 0x7f000789'
+            'const v2, 0x7f420888' \
+            'const v2, 0x7f000789'
     fi
 fi
 
@@ -587,12 +554,12 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
             "CLOUDY_WORK_MODE" \
             "1"
         SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$8.smali" "replace" \
+            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$11.smali" "replace" \
             "handleMessage(Landroid/os/Message;)V" \
             "SUNNY_WORK_MODE" \
             "0"
         SMALI_PATCH "system" "system/framework/services.jar" \
-            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$8.smali" "replace" \
+            "smali_classes2/com/android/server/usb/UsbHostRestrictor\$11.smali" "replace" \
             "handleMessage(Landroid/os/Message;)V" \
             "RAINY_RESTRICT_MODE" \
             "2"
@@ -670,6 +637,29 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
             "etc/singletake/ClarityScorer" 0 2000 755 "u:object_r:vendor_configs_file:s0"
     fi
 fi
+
+# Heatmap (pre-API 36)
+# - Kernel drivers are samsung,sec_auth_sle956681 or samsung,sec_auth_ds28e30
+# - Do not check for SDK version because even some native devices do not support it
+VBOOT_MISSING=true
+
+if [ -f "$WORK_DIR/kernel/vendor_boot.img" ]; then
+    # Check for GKI devices
+    EXTRACT_KERNEL_MODULES
+    if grep -q "samsung,sec_auth" "$TMP_DIR/out/vendor_ramdisk"*; then
+        VBOOT_MISSING=false
+    fi
+fi
+
+if $VBOOT_MISSING; then
+    PATCHED=true
+    DELETE_FROM_WORK_DIR "system" "system/bin/heatmap"
+    DELETE_FROM_WORK_DIR "system" "system/etc/init/init.sec-heatmap.rc"
+    DELETE_FROM_WORK_DIR "system" "system/lib64/libectcore.so"
+    DELETE_FROM_WORK_DIR "system" "system/lib64/libparam_A55_250328.so"
+fi
+
+unset VBOOT_MISSING
 
 if ! $PATCHED; then
     LOG "\033[0;33m! Nothing to do\033[0m"
