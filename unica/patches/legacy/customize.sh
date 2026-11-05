@@ -290,6 +290,13 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     fi
 fi
 
+if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
+    APPLY_PATCH "system" "system/framework/framework.jar" \
+        "$MODPATH/gpu_meminfo/framework.jar/0001-Nuke-getGpuTotalUsageKb.patch"
+    APPLY_PATCH "system" "system/framework/services.jar" \
+        "$MODPATH/gpu_meminfo/services.jar/0001-Nuke-getGpuTotalUsageKb.patch"
+fi
+
 # Ensure IQtiComposer support (pre-API 36)
 # - Disable "ro.product.first_api_level" < 34 check
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then

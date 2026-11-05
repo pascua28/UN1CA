@@ -1,0 +1,27 @@
+From 2ed074284b3d3c7315a7db9b5476dbeb42340f94 Mon Sep 17 00:00:00 2001
+From: Samuel Pascua <pascua.samuel.14@gmail.com>
+Date: Thu, 5 Nov 2026 22:26:20 +0800
+Subject: [PATCH] Nuke getGpuTotalUsageKb()
+
+---
+ smali_classes6/com/android/internal/util/MemInfoReader.smali | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/smali_classes6/com/android/internal/util/MemInfoReader.smali b/smali_classes6/com/android/internal/util/MemInfoReader.smali
+index 9fd065d2..4d84e074 100644
+--- a/smali_classes6/com/android/internal/util/MemInfoReader.smali
++++ b/smali_classes6/com/android/internal/util/MemInfoReader.smali
+@@ -37,9 +37,7 @@
+ .method private blacklist getGpuKernelUsedSizeKb()J
+     .locals 4
+ 
+-    invoke-static {}, Landroid/os/Debug;->getGpuTotalUsageKb()J
+-
+-    move-result-wide v0
++    const-wide/16 v0, -0x1
+ 
+     const-wide/16 v2, 0x0
+ 
+-- 
+2.54.0
+

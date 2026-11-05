@@ -1,0 +1,75 @@
+From 5b04683cb23de778597b04d6bbb7d009bc59b953 Mon Sep 17 00:00:00 2001
+From: Samuel Pascua <pascua.samuel.14@gmail.com>
+Date: Thu, 5 Nov 2026 22:25:26 +0800
+Subject: [PATCH] Nuke getGpuTotalUsageKb()
+
+---
+ .../server/am/ActivityManagerService$MainHandler$1.smali      | 4 +---
+ smali/com/android/server/am/ActivityManagerService.smali      | 4 +---
+ smali/com/android/server/am/MemoryUsageStats.smali            | 4 +---
+ .../com/android/server/stats/pull/StatsPullAtomService.smali  | 4 +---
+ 4 files changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/smali/com/android/server/am/ActivityManagerService$MainHandler$1.smali b/smali/com/android/server/am/ActivityManagerService$MainHandler$1.smali
+index 935eba74..e6fbdd14 100644
+--- a/smali/com/android/server/am/ActivityManagerService$MainHandler$1.smali
++++ b/smali/com/android/server/am/ActivityManagerService$MainHandler$1.smali
+@@ -1108,9 +1108,7 @@
+     invoke-virtual {v7, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+ 
+     :cond_1c
+-    invoke-static {}, Landroid/os/Debug;->getGpuTotalUsageKb()J
+-
+-    move-result-wide v13
++    const-wide/16 v13, -0x1
+ 
+     cmp-long v5, v13, v16
+ 
+diff --git a/smali/com/android/server/am/ActivityManagerService.smali b/smali/com/android/server/am/ActivityManagerService.smali
+index a6454a77..16182bc2 100644
+--- a/smali/com/android/server/am/ActivityManagerService.smali
++++ b/smali/com/android/server/am/ActivityManagerService.smali
+@@ -27449,9 +27449,7 @@
+     invoke-virtual {v2, v3}, Ljava/io/PrintWriter;->println(Ljava/lang/String;)V
+ 
+     :cond_4b
+-    invoke-static {}, Landroid/os/Debug;->getGpuTotalUsageKb()J
+-
+-    move-result-wide v8
++    const-wide/16 v8, -0x1
+ 
+     cmp-long v3, v8, v22
+ 
+diff --git a/smali/com/android/server/am/MemoryUsageStats.smali b/smali/com/android/server/am/MemoryUsageStats.smali
+index 10488b8a..0fc25da2 100644
+--- a/smali/com/android/server/am/MemoryUsageStats.smali
++++ b/smali/com/android/server/am/MemoryUsageStats.smali
+@@ -166,9 +166,7 @@
+     add-long/2addr v0, v2
+ 
+     :cond_0
+-    invoke-static {}, Landroid/os/Debug;->getGpuTotalUsageKb()J
+-
+-    move-result-wide v2
++    const-wide/16 v2, -0x1
+ 
+     cmp-long v2, v2, v4
+ 
+diff --git a/smali_classes2/com/android/server/stats/pull/StatsPullAtomService.smali b/smali_classes2/com/android/server/stats/pull/StatsPullAtomService.smali
+index 862965ef..297708f1 100644
+--- a/smali_classes2/com/android/server/stats/pull/StatsPullAtomService.smali
++++ b/smali_classes2/com/android/server/stats/pull/StatsPullAtomService.smali
+@@ -7323,9 +7323,7 @@
+ .method public static pullSystemMemory(ILjava/util/List;)V
+     .locals 27
+ 
+-    invoke-static {}, Landroid/os/Debug;->getGpuTotalUsageKb()J
+-
+-    move-result-wide v0
++    const-wide/16 v0, -0x1
+ 
+     long-to-int v9, v0
+ 
+-- 
+2.54.0
+
