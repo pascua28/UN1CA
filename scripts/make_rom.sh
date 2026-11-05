@@ -154,12 +154,6 @@ if $BUILD_ROM; then
         LOG_STEP_OUT
     fi
 
-    if [ -d "$SRC_DIR/unica/mods" ]; then
-        LOG_STEP_IN true "Applying ROM mods"
-        "$SRC_DIR/scripts/internal/apply_modules.sh" "$SRC_DIR/unica/mods" || exit 1
-        LOG_STEP_OUT
-    fi
-
     BUILD_APKS
 
     echo -n "$(GET_WORK_DIR_HASH)" > "$WORK_DIR/.completed"
