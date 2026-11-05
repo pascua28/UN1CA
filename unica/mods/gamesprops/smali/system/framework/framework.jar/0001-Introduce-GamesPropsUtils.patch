@@ -7,13 +7,13 @@ UN1CA: this patch is not complete! Please check unica/mods/gamesprops/customize.
 ---
  .../io/mesalabs/unica/GamesPropsUtils.smali   | 979 ++++++++++++++++++
  1 file changed, 979 insertions(+)
- create mode 100644 smali_classes6/io/mesalabs/unica/GamesPropsUtils.smali
+ create mode 100644 smali_classes7/io/mesalabs/unica/GamesPropsUtils.smali
 
-diff --git a/smali_classes6/io/mesalabs/unica/GamesPropsUtils.smali b/smali_classes6/io/mesalabs/unica/GamesPropsUtils.smali
+diff --git a/smali_classes7/io/mesalabs/unica/GamesPropsUtils.smali b/smali_classes7/io/mesalabs/unica/GamesPropsUtils.smali
 new file mode 100644
 index 00000000..a3dc5958
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/GamesPropsUtils.smali
++++ b/smali_classes7/io/mesalabs/unica/GamesPropsUtils.smali
 @@ -0,0 +1,979 @@
 +.class public final Lio/mesalabs/unica/GamesPropsUtils;
 +.super Ljava/lang/Object;
