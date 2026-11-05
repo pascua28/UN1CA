@@ -25,8 +25,7 @@ if [[ "$SOURCE_DVFSAPP_CONFIG_DVFS_POLICY_FILENAME" != "$TARGET_DVFSAPP_CONFIG_D
 
     # com/sec/android/sdhms/performance/PerformanceFeature
     SMALI_PATCH "system" "system/priv-app/SamsungDeviceHealthManagerService/SamsungDeviceHealthManagerService.apk" \
-        "smali/c4/c.smali" "replace" \
-        "<clinit>()V" \
+        "smali/c4/c.smali" "replaceall" \
         "$SOURCE_DVFSAPP_CONFIG_DVFS_POLICY_FILENAME" \
         "$TARGET_DVFSAPP_CONFIG_DVFS_POLICY_FILENAME"
 
