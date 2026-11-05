@@ -16,4 +16,17 @@ elif [[ "$SOURCE_PLATFORM_SDK_VERSION" == "$TARGET_PLATFORM_SDK_VERSION" ]]; the
     ADD_TO_WORK_DIR "$TARGET_FIRMWARE" "system" "system/etc/vintf/manifest.xml"
 fi
 
+EVAL "
+sed -i '/<name>android.hardware.media.c2<\/name>/i\\
+    <hal format=\"hidl\">\\
+        <name>android.hardware.keymaster</name>\\
+        <version>4.0</version>\\
+        <interface>\\
+            <name>IKeymasterDevice</name>\\
+            <instance>strongbox</instance>\\
+        </interface>\\
+    </hal>' \
+    \"$WORK_DIR/system/system/etc/vintf/compatibility_matrix.device.xml\"
+"
+
 unset -f _LOG
