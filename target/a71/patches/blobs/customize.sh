@@ -88,4 +88,6 @@ ADD_TO_WORK_DIR "a52qnsxx" "vendor" "etc/vintf/manifest/vendor.samsung.hardware.
 ADD_TO_WORK_DIR "a52qnsxx" "vendor" "lib64/vendor.samsung.hardware.vibrator-V3-ndk_platform.so" 0 0 644 "u:object_r:vendor_configs_file:s0"
 LOG_STEP_OUT
 
+EVAL "sed -i '1i import /vendor/ueventd.rc' \"$WORK_DIR/system/system/etc/ueventd.rc\""
+
 ADD_TO_WORK_DIR "a73xqxx" "vendor" "lib64/libsnaplite_native.so" 0 0 644 "u:object_r:same_process_hal_file:s0"
