@@ -1,0 +1,4 @@
+id=iccc_service
+name=Disable ICCC service
+author=pascua28
+description=Nuke IcccManagerService to fix crash
