@@ -1,0 +1,37 @@
+From 20cf2a876863c500707d0b4177255614740216a8 Mon Sep 17 00:00:00 2001
+From: Samuel Pascua <pascua.samuel.14@gmail.com>
+Date: Sat, 7 Nov 2026 23:35:25 +0800
+Subject: [PATCH] Fix crash on newer OneUI version
+
+Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
+---
+ smali_classes3/x1/k.smali | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/smali_classes3/x1/k.smali b/smali_classes3/x1/k.smali
+index 7e30bb9f..5bd34b9a 100644
+--- a/smali_classes3/x1/k.smali
++++ b/smali_classes3/x1/k.smali
+@@ -516,17 +516,9 @@
+     goto :goto_0
+ 
+     :cond_1
+-    new-instance v0, Ljava/lang/IllegalArgumentException;
++    sget-object v0, Lx1/k;->V8_0:Lx1/k;
+ 
+-    const-string v1, "get : argument is invalid - "
+-
+-    invoke-static {p0, v1}, LG2/u;->h(ILjava/lang/String;)Ljava/lang/String;
+-
+-    move-result-object p0
+-
+-    invoke-direct {v0, p0}, Ljava/lang/IllegalArgumentException;-><init>(Ljava/lang/String;)V
+-
+-    throw v0
++    return-object v0
+ .end method
+ 
+ .method public static valueOf(Ljava/lang/String;)Lx1/k;
+-- 
+2.54.0
+
