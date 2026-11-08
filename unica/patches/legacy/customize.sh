@@ -149,6 +149,12 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "35" ]; then
     fi
 fi
 
+# Android 17 defaults to AIDL gnss. Remove to use HIDL one.
+if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "34" ]; then
+    DELETE_FROM_WORK_DIR "system_ext" "etc/init/loc_sys_service.rc"
+    DELETE_FROM_WORK_DIR "system_ext" "bin/loc_sys_service"
+fi
+
 # Ensure config_num_physical_slots is configured (pre-API 36)
 # https://android.googlesource.com/platform/frameworks/opt/telephony/+/42e37234cee15c9f3fcfac0532110abfc8843b99%5E%21/#F0
 if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
