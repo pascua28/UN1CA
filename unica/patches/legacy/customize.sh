@@ -661,6 +661,14 @@ fi
 
 unset VBOOT_MISSING
 
+if ! grep -qF 'mremap: arg3 == 3 || arg3 == MREMAP_MAYMOVE' \
+    "$WORK_DIR/vendor/etc/seccomp_policy/samsung.software.media.c2-base-policy"; then
+    PATCHED=true
+    LOG "- Patching /vendor/etc/seccomp_policy/samsung.software.media.c2-base-policy"
+    EVAL "sed -i 's/mremap: arg3 == 3/mremap: arg3 == 3 || arg3 == MREMAP_MAYMOVE/g' \
+        \"$WORK_DIR/vendor/etc/seccomp_policy/samsung.software.media.c2-base-policy\""
+fi
+
 if ! $PATCHED; then
     LOG "\033[0;33m! Nothing to do\033[0m"
 fi
