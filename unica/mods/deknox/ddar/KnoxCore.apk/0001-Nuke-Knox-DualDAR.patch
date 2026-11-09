@@ -1,17 +1,18 @@
-From 4f905ad4d81da06588b66e26012db12b3662da60 Mon Sep 17 00:00:00 2001
+From 281bdef305a58e9f04c65cf6be4bd19f33b82e79 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Wed, 29 Oct 2025 22:50:07 +0100
+Date: Sun, 1 Nov 2026 22:42:08 +0800
 Subject: [PATCH] Nuke Knox DualDAR
 
+Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
 ---
- .../provisioning/DualDarStartedService.smali  | 115 ------------------
- 1 file changed, 115 deletions(-)
+ .../provisioning/DualDarStartedService.smali  | 113 ------------------
+ 1 file changed, 113 deletions(-)
 
 diff --git a/smali/com/samsung/android/knox/containercore/provisioning/DualDarStartedService.smali b/smali/com/samsung/android/knox/containercore/provisioning/DualDarStartedService.smali
-index 8447461..596eccc 100644
+index 7ddf9de..fd361a2 100644
 --- a/smali/com/samsung/android/knox/containercore/provisioning/DualDarStartedService.smali
 +++ b/smali/com/samsung/android/knox/containercore/provisioning/DualDarStartedService.smali
-@@ -1763,121 +1763,6 @@
+@@ -1733,119 +1733,6 @@
  .method private validatePrerequisiteForDualDar(Landroid/content/Context;Ljava/lang/String;Landroid/os/Bundle;ZZ)I
      .locals 0
  
@@ -110,11 +111,9 @@ index 8447461..596eccc 100644
 -    :goto_1
 -    new-instance p3, Ljava/lang/StringBuilder;
 -
--    invoke-direct {p3}, Ljava/lang/StringBuilder;-><init>()V
--
 -    const-string p4, "Exception in validatePrequisiteForDualDAR "
 -
--    invoke-virtual {p3, p4}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+-    invoke-direct {p3, p4}, Ljava/lang/StringBuilder;-><init>(Ljava/lang/String;)V
 -
 -    invoke-virtual {p1}, Ljava/lang/Exception;->getMessage()Ljava/lang/String;
 -
@@ -134,5 +133,5 @@ index 8447461..596eccc 100644
  
      return p0
 -- 
-2.51.1
+2.54.0
 

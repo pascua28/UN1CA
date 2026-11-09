@@ -1,84 +1,82 @@
-From 8690675ee358248079f99d9254ec8431c7d0ce6d Mon Sep 17 00:00:00 2001
+From d5d75a05686c602f6c1085d945490d8720312ca3 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Sat, 15 Nov 2025 14:11:10 +0100
+Date: Sun, 1 Nov 2026 22:09:52 +0800
 Subject: [PATCH] Nuke BlockchainTZService
 
 ---
- ...temServer$$ExternalSyntheticLambda10.smali | 93 +++++++------------
- smali/com/android/server/SystemServer$5.smali | 35 +------
- 2 files changed, 35 insertions(+), 93 deletions(-)
+ ...temServer$$ExternalSyntheticLambda11.smali | 89 +++++++------------
+ smali/com/android/server/SystemServer$5.smali | 35 +-------
+ 2 files changed, 34 insertions(+), 90 deletions(-)
 
-diff --git a/smali/com/android/server/SystemServer$$ExternalSyntheticLambda10.smali b/smali/com/android/server/SystemServer$$ExternalSyntheticLambda10.smali
-index a176e3b95..8e4f30bf1 100644
---- a/smali/com/android/server/SystemServer$$ExternalSyntheticLambda10.smali
-+++ b/smali/com/android/server/SystemServer$$ExternalSyntheticLambda10.smali
-@@ -69,15 +69,11 @@
+diff --git a/smali/com/android/server/SystemServer$$ExternalSyntheticLambda11.smali b/smali/com/android/server/SystemServer$$ExternalSyntheticLambda11.smali
+index 493a44ae..b10bcab8 100644
+--- a/smali/com/android/server/SystemServer$$ExternalSyntheticLambda11.smali
++++ b/smali/com/android/server/SystemServer$$ExternalSyntheticLambda11.smali
+@@ -49,15 +49,11 @@
      :goto_0
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
--    const-string v3, "Blockchain Service"
-+    const-string/jumbo v3, "SemAuthnrService"
+-    const-string v2, "Blockchain Service"
++    const-string/jumbo v2, "SemAuthnrService"
  
-     invoke-virtual {v2, v3}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, v2}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
      :try_start_1
--    invoke-static {v1, v3}, Landroid/util/Slog;->i(Ljava/lang/String;Ljava/lang/String;)I
+-    invoke-static {v0, v2}, Landroid/util/Slog;->i(Ljava/lang/String;Ljava/lang/String;)I
 -
--    const-string/jumbo v3, "blockchain"
+-    const-string/jumbo v2, "blockchain"
 -
-     new-instance v4, Lcom/android/server/SystemServer$5;
+     new-instance v3, Lcom/android/server/SystemServer$5;
  
-     const/4 v5, 0x5
-@@ -91,63 +87,36 @@
-     goto :goto_1
- 
+     const/4 v4, 0x5
+@@ -73,61 +69,36 @@
      :catchall_1
--    move-exception v3
+     move-exception v2
+ 
+-    const-string v3, "Failure starting Blockchain TZ Service"
 -
--    const-string v4, "Failure starting Blockchain TZ Service"
--
--    invoke-static {v1, v4, v3}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+-    invoke-static {v0, v3, v2}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
 -
 -    :goto_1
--    invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+-    invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
 -
--    const-string/jumbo v3, "SemAuthnrService"
+-    const-string/jumbo v2, "SemAuthnrService"
 -
--    invoke-virtual {v2, v3}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+-    invoke-virtual {v1, v2}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
 -
 -    :try_start_2
--    new-instance v4, Lcom/android/server/SystemServer$5;
+-    new-instance v3, Lcom/android/server/SystemServer$5;
 -
--    const/4 v5, 0x6
+-    const/4 v4, 0x6
 -
--    invoke-direct {v4, v5}, Lcom/android/server/SystemServer$5;-><init>(I)V
+-    invoke-direct {v3, v4}, Lcom/android/server/SystemServer$5;-><init>(I)V
 -
--    invoke-static {v3, v4}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
+-    invoke-static {v2, v3}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
 -    :try_end_2
 -    .catchall {:try_start_2 .. :try_end_2} :catchall_2
 -
 -    goto :goto_2
 -
 -    :catchall_2
-     const-string v3, "Failed to add SemAuthnrService."
+     const-string v2, "Failed to add SemAuthnrService."
  
-     invoke-static {v1, v3}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;)I
+     invoke-static {v0, v2}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;)I
  
 -    :goto_2
 +    :goto_1
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
-     const-string/jumbo v3, "VideoTranscodingService"
+     const-string/jumbo v2, "VideoTranscodingService"
  
-     invoke-virtual {v2, v3}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, v2}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
 -    :try_start_3
 +    :try_start_2
-     const-string/jumbo v3, "SemVideoTranscodingService"
+     const-string/jumbo v2, "SemVideoTranscodingService"
  
-     const-class v4, Lcom/samsung/android/media/codec/VideoTranscodingService;
+     const-class v3, Lcom/samsung/android/media/codec/VideoTranscodingService;
  
-     invoke-static {v3, v4}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Ljava/lang/Class;)V
+     invoke-static {v2, v3}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Ljava/lang/Class;)V
 -    :try_end_3
 -    .catchall {:try_start_3 .. :try_end_3} :catchall_3
 +    :try_end_2
@@ -89,60 +87,59 @@ index a176e3b95..8e4f30bf1 100644
  
 -    :catchall_3
 +    :catchall_2
-     move-exception v3
+     move-exception v2
  
-     const-string v4, "Failed to start VideoTranscodingService "
+     const-string v3, "Failed to start VideoTranscodingService "
  
-     invoke-static {v1, v4, v3}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+     invoke-static {v0, v3, v2}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
  
 -    :goto_3
 +    :goto_2
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
-     const/4 v3, 0x0
-@@ -160,23 +129,23 @@
+     const/4 v2, 0x0
+@@ -142,23 +113,23 @@
  
-     invoke-virtual {v2, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
 -    :try_start_4
 +    :try_start_3
-     const-string/jumbo v3, "dsms"
+     const-string/jumbo v2, "dsms"
  
      const-class v4, Lcom/samsung/android/jdsms/DsmsService;
  
-     invoke-static {v3, v4}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Ljava/lang/Class;)V
+     invoke-static {v2, v4}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Ljava/lang/Class;)V
 -    :try_end_4
--    .catchall {:try_start_4 .. :try_end_4} :catchall_4
 +    :try_end_3
-+    .catchall {:try_start_3 .. :try_end_3} :catchall_3
+     .catchall {:try_start_4 .. :try_end_4} :catchall_4
  
 -    goto :goto_4
 +    goto :goto_3
  
 -    :catchall_4
 +    :catchall_3
-     move-exception v3
+     move-exception v2
  
-     invoke-static {p0, v3}, Lcom/android/server/SystemServer;->reportWtf(Ljava/lang/String;Ljava/lang/Throwable;)V
+     invoke-static {p0, v2}, Lcom/android/server/SystemServer;->reportWtf(Ljava/lang/String;Ljava/lang/Throwable;)V
  
 -    :goto_4
 +    :goto_3
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
      :cond_0
-@@ -184,7 +153,7 @@
+@@ -166,7 +137,7 @@
  
-     invoke-virtual {v2, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
 -    :try_start_5
 +    :try_start_4
      const-string/jumbo p0, "mpos_service"
  
-     new-instance v3, Lcom/android/server/SystemServer$5;
-@@ -192,10 +161,10 @@
-     invoke-direct {v3, v0}, Lcom/android/server/SystemServer$5;-><init>(I)V
+     new-instance v2, Lcom/android/server/SystemServer$5;
+@@ -174,10 +145,10 @@
+     invoke-direct {v2, v3}, Lcom/android/server/SystemServer$5;-><init>(I)V
  
-     invoke-static {p0, v3}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
+     invoke-static {p0, v2}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
 -    :try_end_5
 -    .catch Ljava/lang/Exception; {:try_start_5 .. :try_end_5} :catch_0
 +    :try_end_4
@@ -153,27 +150,27 @@ index a176e3b95..8e4f30bf1 100644
  
      :catch_0
      move-exception p0
-@@ -206,14 +175,14 @@
+@@ -188,14 +159,14 @@
  
      invoke-virtual {p0}, Ljava/lang/Exception;->printStackTrace()V
  
 -    :goto_5
 +    :goto_4
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
      const-string p0, "Email Keystore Service"
  
-     invoke-virtual {v2, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
 -    :try_start_6
 +    :try_start_5
-     invoke-static {v1, p0}, Landroid/util/Slog;->i(Ljava/lang/String;Ljava/lang/String;)I
+     invoke-static {v0, p0}, Landroid/util/Slog;->i(Ljava/lang/String;Ljava/lang/String;)I
  
      const-string/jumbo p0, "emailksproxy"
-@@ -225,26 +194,26 @@
-     invoke-direct {v0, v3}, Lcom/android/server/SystemServer$5;-><init>(I)V
+@@ -207,26 +178,26 @@
+     invoke-direct {v2, v3}, Lcom/android/server/SystemServer$5;-><init>(I)V
  
-     invoke-static {p0, v0}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
+     invoke-static {p0, v2}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
 -    :try_end_6
 -    .catchall {:try_start_6 .. :try_end_6} :catchall_5
 +    :try_end_5
@@ -186,27 +183,27 @@ index a176e3b95..8e4f30bf1 100644
 +    :catchall_4
      move-exception p0
  
-     const-string v0, "Failure starting Email Keystore Service"
+     const-string v2, "Failure starting Email Keystore Service"
  
-     invoke-static {v1, v0, p0}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+     invoke-static {v0, v2, p0}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
  
 -    :goto_6
 +    :goto_5
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
      const-string/jumbo p0, "SemSsdidManagerService"
  
-     invoke-virtual {v2, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
+     invoke-virtual {v1, p0}, Lcom/android/server/utils/TimingsTraceAndSlog;->traceBegin(Ljava/lang/String;)V
  
 -    :try_start_7
 +    :try_start_6
      const-string/jumbo p0, "sem_ssdid"
  
-     new-instance v0, Lcom/android/server/SystemServer$$ExternalSyntheticLambda11;
-@@ -252,19 +221,19 @@
-     invoke-direct {v0}, Ljava/lang/Object;-><init>()V
+     new-instance v2, Lcom/android/server/SystemServer$$ExternalSyntheticLambda12;
+@@ -234,19 +205,19 @@
+     invoke-direct {v2}, Ljava/lang/Object;-><init>()V
  
-     invoke-static {p0, v0}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
+     invoke-static {p0, v2}, Landroid/os/ServiceManager;->addService(Ljava/lang/String;Landroid/os/IServiceCreator;)V
 -    :try_end_7
 -    .catchall {:try_start_7 .. :try_end_7} :catchall_6
 +    :try_end_6
@@ -219,20 +216,20 @@ index a176e3b95..8e4f30bf1 100644
 +    :catchall_5
      move-exception p0
  
-     const-string v0, "Failure starting SemSsdidManagerService"
+     const-string v2, "Failure starting SemSsdidManagerService"
  
-     invoke-static {v1, v0, p0}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
+     invoke-static {v0, v2, p0}, Landroid/util/Slog;->e(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)I
  
 -    :goto_7
 +    :goto_6
-     invoke-virtual {v2}, Landroid/util/TimingsTraceLog;->traceEnd()V
+     invoke-virtual {v1}, Landroid/util/TimingsTraceLog;->traceEnd()V
  
      return-void
 diff --git a/smali/com/android/server/SystemServer$5.smali b/smali/com/android/server/SystemServer$5.smali
-index 3c86dd672..52c4bc4b4 100644
+index 17d43b2b..c6d33369 100644
 --- a/smali/com/android/server/SystemServer$5.smali
 +++ b/smali/com/android/server/SystemServer$5.smali
-@@ -43,32 +43,6 @@
+@@ -47,46 +47,20 @@
      return-object p0
  
      :pswitch_0
@@ -264,8 +261,7 @@ index 3c86dd672..52c4bc4b4 100644
 -    :pswitch_1
      new-instance p0, Lcom/android/server/knox/dar/DarManagerService;
  
-     new-instance v0, Lcom/android/server/knox/dar/DarManagerService$Injector;
-@@ -79,14 +53,14 @@
+     invoke-direct {p0, p1}, Lcom/android/server/knox/dar/DarManagerService;-><init>(Landroid/content/Context;)V
  
      return-object p0
  
@@ -282,7 +278,7 @@ index 3c86dd672..52c4bc4b4 100644
      new-instance p0, Lcom/android/server/emailksproxy/EmailKeystoreService;
  
      invoke-direct {p0}, Lcom/samsung/android/knox/util/ISemKeyStoreService$Stub;-><init>()V
-@@ -95,14 +69,14 @@
+@@ -95,7 +69,7 @@
  
      return-object p0
  
@@ -290,15 +286,16 @@ index 3c86dd672..52c4bc4b4 100644
 +    :pswitch_3
      new-instance p0, Lcom/android/server/enterprise/mpos/MPOSService;
  
-     invoke-direct {p0, p1}, Lcom/android/server/enterprise/mpos/MPOSService;-><init>(Landroid/content/Context;)V
+     invoke-direct {p0}, Lcom/samsung/android/knox/mpos/IMPOSService$Stub;-><init>()V
+@@ -122,7 +96,7 @@
  
      return-object p0
  
 -    :pswitch_5
 +    :pswitch_4
-     new-instance p0, Lcom/android/server/IcccManagerService;
+     const-string v1, "IcccManagerService"
  
-     invoke-direct {p0}, Lcom/samsung/android/iccc/IIntegrityControlCheckCenter$Stub;-><init>()V
+     const-string/jumbo v2, "IcccManagerService is disabled"
 @@ -137,7 +111,6 @@
  
      :pswitch_data_0
@@ -308,5 +305,5 @@ index 3c86dd672..52c4bc4b4 100644
          :pswitch_3
          :pswitch_2
 -- 
-2.51.2
+2.54.0
 
