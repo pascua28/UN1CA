@@ -356,6 +356,11 @@ HEX_PATCH "$WORK_DIR/system/system/lib/libstagefright.so" \
 HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
     "726f2e70726f647563742e6d6f64656c00" "726f2e626f6f742e656d2e6d6f64656c00"
 
+# Fix ACodec buffer overflow
+# mov w2, #0x200 (512) -> mov 2, #0xfe (254)
+HEX_PATCH "$WORK_DIR/system/system/lib64/libstagefright.so" \
+    "02408052e30315aa" "c21f8052e30315aa"
+
 # Fix object capture
 if [[ "$TARGET_OS_SINGLE_SYSTEM_IMAGE" == "essi" ]]; then
     if {
