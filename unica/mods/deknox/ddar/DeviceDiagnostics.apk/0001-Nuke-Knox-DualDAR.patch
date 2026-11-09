@@ -1,18 +1,19 @@
-From d67d9ec89abe20d409dea501f8fb79abaaef93f8 Mon Sep 17 00:00:00 2001
+From 442c78693c1e458c5cece5d67c5dd83d0351ed4d Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Thu, 30 Oct 2025 09:45:32 +0100
+Date: Sun, 1 Nov 2026 22:13:22 +0800
 Subject: [PATCH] Nuke Knox DualDAR
 
+Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
 ---
  .../knox/container/KnoxContainerManager.smali | 44 ++-----------------
  .../android/knox/ddar/DualDARPolicy.smali     |  4 +-
  2 files changed, 5 insertions(+), 43 deletions(-)
 
 diff --git a/smali/com/samsung/android/knox/container/KnoxContainerManager.smali b/smali/com/samsung/android/knox/container/KnoxContainerManager.smali
-index e1efe92..860920c 100644
+index 9881a64..8dd8ef2 100644
 --- a/smali/com/samsung/android/knox/container/KnoxContainerManager.smali
 +++ b/smali/com/samsung/android/knox/container/KnoxContainerManager.smali
-@@ -3830,49 +3830,11 @@
+@@ -3473,49 +3473,11 @@
  .end method
  
  .method public getDualDARPolicy()Lcom/samsung/android/knox/ddar/DualDARPolicy;
@@ -66,19 +67,19 @@ index e1efe92..860920c 100644
  
  .method public getEmailAccountPolicy()Lcom/samsung/android/knox/accounts/EmailAccountPolicy;
 diff --git a/smali/com/samsung/android/knox/ddar/DualDARPolicy.smali b/smali/com/samsung/android/knox/ddar/DualDARPolicy.smali
-index 9ba922c..30e9b34 100644
+index cf0eda3..e70f563 100644
 --- a/smali/com/samsung/android/knox/ddar/DualDARPolicy.smali
 +++ b/smali/com/samsung/android/knox/ddar/DualDARPolicy.smali
-@@ -104,7 +104,7 @@
+@@ -84,7 +84,7 @@
  .method public static getDualDARVersion()Ljava/lang/String;
      .locals 1
  
--    const-string v0, "1.8.0"
+-    const-string v0, "1.9.0"
 +    const/4 v0, 0x0
  
      return-object v0
  .end method
-@@ -137,7 +137,7 @@
+@@ -117,7 +117,7 @@
  .method public static isDualDarSupportedForManagedDevice()Z
      .locals 1
  
@@ -88,5 +89,5 @@ index 9ba922c..30e9b34 100644
      return v0
  .end method
 -- 
-2.51.1
+2.54.0
 

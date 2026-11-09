@@ -1,6 +1,6 @@
-From 6e8129505ac9fbb9bce9af8f496c576f084cde7a Mon Sep 17 00:00:00 2001
+From 305b98a4fa29292503316d37da58c5512232ecdd Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Sat, 30 Aug 2025 01:17:41 +0200
+Date: Thu, 4 Jun 2026 18:18:07 +0800
 Subject: [PATCH] Nuke MDF
 
 ---
@@ -8,7 +8,7 @@ Subject: [PATCH] Nuke MDF
  1 file changed, 116 insertions(+), 1395 deletions(-)
 
 diff --git a/smali_classes6/com/samsung/android/security/mdf/MdfUtils.smali b/smali_classes6/com/samsung/android/security/mdf/MdfUtils.smali
-index 93c961ac..cc440bb9 100644
+index 30986d7b..cc440bb9 100644
 --- a/smali_classes6/com/samsung/android/security/mdf/MdfUtils.smali
 +++ b/smali_classes6/com/samsung/android/security/mdf/MdfUtils.smali
 @@ -24,1509 +24,230 @@
@@ -87,15 +87,15 @@ index 93c961ac..cc440bb9 100644
 -
 -    const-string v6, "edu"
 -
--    const-string v7, "go"
+-    const-string/jumbo v7, "go"
 -
--    const-string v8, "gouv"
+-    const-string/jumbo v8, "gouv"
 -
--    const-string v9, "gov"
+-    const-string/jumbo v9, "gov"
 -
--    const-string v10, "info"
+-    const-string/jumbo v10, "info"
 -
--    const-string v11, "lg"
+-    const-string/jumbo v11, "lg"
 -
 -    const-string/jumbo v12, "ne"
 -
@@ -290,7 +290,7 @@ index 93c961ac..cc440bb9 100644
 -    .catch Ljava/security/cert/CertificateParsingException; {:try_start_0 .. :try_end_0} :catch_0
 -
 -    :catch_0
--    const-string p0, "list of subject alternative names is not available"
+-    const-string/jumbo p0, "list of subject alternative names is not available"
 -
 -    invoke-virtual {v0, p0}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
 -
@@ -1503,7 +1503,7 @@ index 93c961ac..cc440bb9 100644
 -
 -    move-result-object p1
 -
--    const-string p2, "logPrivileged"
+-    const-string/jumbo p2, "logPrivileged"
 -
 -    invoke-virtual {p0, p2, v0}, Ljava/lang/Class;->getMethod(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;
 -
@@ -1638,5 +1638,5 @@ index 93c961ac..cc440bb9 100644
 +    return p0
  .end method
 -- 
-2.51.1
+2.54.0
 
