@@ -17,6 +17,13 @@ if [[ "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_GALLERY_CONFIG_FACE_C
     fi
 fi
 
+if [ -f "$WORK_DIR/system/system/priv-app/FaceService/FaceService.apk" ] && \
+        [ -f "$FW_DIR/$SOURCE_FIRMWARE_PATH/system/system/saiv/imageCropper/sce_detector_cnn.tflite" ]; then
+    ADD_TO_WORK_DIR "$SOURCE_FIRMWARE" \
+        "system" "system/saiv/imageCropper/sce_detector_cnn.tflite" \
+        0 0 644 "u:object_r:system_file:s0"
+fi
+
 # SEC_PRODUCT_FEATURE_SAIV_CONFIG_MIDAS
 if [ ! -f "$WORK_DIR/vendor/etc/midas/moire_detection/moire_detection.tflite" ]; then
     ADD_TO_WORK_DIR "$SOURCE_FIRMWARE" "vendor" "etc/midas/moire_detection/moire_detection.tflite" 0 0 644 "u:object_r:vendor_configs_file:s0"
