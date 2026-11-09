@@ -15,6 +15,7 @@ source "$SRC_DIR/scripts/utils/common_utils.sh"
 # - replaceall <value> <replacement>: Replaces all the occurences of the supplied string in the whole smali file
 # - return <method> <value>: Patches the supplied method in order to return the desired value
 # - strip <method>: Deletes the supplied method in the provided smali file
+
 SMALI_PATCH()
 {
     _CHECK_NON_EMPTY_PARAM "PARTITION" "$1" || return 1
@@ -39,8 +40,9 @@ SMALI_PATCH()
     DECODE_APK "$PARTITION" "$FILE" || return 1
 
     if [[ "$OPERATION" != "null" ]] && [[ "$OPERATION" != "remove" ]] && \
-        [[ "$OPERATION" != "replace" ]] && [[ "$OPERATION" != "replaceall" ]] && \
-            [[ "$OPERATION" != "return" ]] && [[ "$OPERATION" != "strip" ]]; then
+            [[ "$OPERATION" != "replace" ]] && [[ "$OPERATION" != "replaceall" ]] && \
+            [[ "$OPERATION" != "return" ]] && [[ "$OPERATION" != "strip" ]] && \
+            [[ "$OPERATION" != "replacebody" ]]; then
         LOGE "Operation not valid: \"$OPERATION\""
         return 1
     fi
@@ -56,6 +58,11 @@ SMALI_PATCH()
         if ! [[ "$METHOD" =~ ^[A-Za-z0-9\$\<\-].*\(.*\).* ]]; then
             LOGE "Method name not valid: \"$METHOD\""
             return 1
+        fi
+
+        if [[ "$OPERATION" == "replacebody" ]]; then
+            _CHECK_NON_EMPTY_PARAM "BODY" "$6" || return 1
+            local BODY="$6"
         fi
     fi
 
@@ -315,7 +322,6 @@ SMALI_PATCH()
         fi
 
         LOG "- Replacing return value of method \"$METHOD\" in /$PARTITION/$FILE/$SMALI to \"$VALUE\""
-
         awk -v FN="$METHOD" -v LOC="$LOC" -v VAL="$VALUE" -v RET="$RET" '
             BEGIN { inside = 0 }
             /^\.method/ && index($0, FN) {
@@ -343,6 +349,40 @@ SMALI_PATCH()
             LOGE "Failed to replace return value of method \"$METHOD\" in /$PARTITION/$FILE/$SMALI to \"$VALUE\""
             return 1
         fi
+
+    # Replace the entire method body
+    elif [[ "$OPERATION" == "replacebody" ]]; then
+        LOG "- Replacing entire body of method \"$METHOD\" in /$PARTITION/$FILE/$SMALI"
+
+        awk -v FN="$METHOD" -v BODY="$BODY" '
+            BEGIN { inside = 0 }
+
+            /^\.method/ && index($0, FN) {
+                print
+                gsub(/\\n/, "\n", BODY)
+                printf "%s\n", BODY
+                inside = 1
+                next
+            }
+
+            inside && /^\.end method/ {
+                print
+                inside = 0
+                next
+            }
+
+            inside { next }
+
+            { print }
+        ' "$FILE_PATH/$SMALI" > "$FILE_PATH/$SMALI.tmp" && \
+            mv "$FILE_PATH/$SMALI.tmp" "$FILE_PATH/$SMALI"
+
+        AFTER="$(sha1sum "$FILE_PATH/$SMALI")"
+        if [[ "$BEFORE" == "$AFTER" ]]; then
+            LOGE "Failed to replace method body \"$METHOD\" in /$PARTITION/$FILE/$SMALI"
+            return 1
+        fi
+
     # Replace a string with another string inside the method
     # or Replace a line with another line inside the method
     elif [[ "$OPERATION" == "replace" ]]; then
