@@ -1,21 +1,20 @@
-From d84eccd6455be7270cb7151e8d9d43901efb4479 Mon Sep 17 00:00:00 2001
+From d6c291f8e52887fb2653845e99087f9b36c9cbd8 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
 Date: Mon, 22 Sep 2025 12:45:02 +0200
 Subject: [PATCH] Nuke Knox Matrix AI Privacy
 
 ---
- .../ai/privacy/PermissionDataController.smali | 713 +-----------------
- 1 file changed, 1 insertion(+), 712 deletions(-)
+ .../ai/privacy/PermissionDataController.smali | 704 +-----------------
+ 1 file changed, 3 insertions(+), 701 deletions(-)
 
 diff --git a/smali_classes6/com/samsung/android/kmxservice/ai/privacy/PermissionDataController.smali b/smali_classes6/com/samsung/android/kmxservice/ai/privacy/PermissionDataController.smali
-index 830778f3..d36ceab6 100644
+index 830778f3..ca312b58 100644
 --- a/smali_classes6/com/samsung/android/kmxservice/ai/privacy/PermissionDataController.smali
 +++ b/smali_classes6/com/samsung/android/kmxservice/ai/privacy/PermissionDataController.smali
-@@ -2,722 +2,11 @@
- .super Ljava/lang/Object;
+@@ -3,721 +3,23 @@
  .source "PermissionDataController.java"
  
--
+ 
 -# static fields
 -.field private static final blacklist DDR_6GB:I = 0x6
 -
@@ -74,7 +73,7 @@ index 830778f3..d36ceab6 100644
 -.field private final blacklist mWriterLock:Ljava/util/concurrent/locks/Lock;
 -
 -
- # direct methods
+-# direct methods
 -.method static constructor blacklist <clinit>()V
 -    .locals 2
 -
@@ -315,12 +314,13 @@ index 830778f3..d36ceab6 100644
 -    invoke-static {v0, v1}, Landroid/os/Binder;->restoreCallingIdentity(J)V
 -
 -    throw p0
--
++    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+ 
 -    :cond_2
--    return-void
--.end method
--
--.method private blacklist write(Lcom/samsung/android/kmxservice/ai/privacy/PermissionData;)V
+     return-void
+ .end method
+ 
+ .method private blacklist write(Lcom/samsung/android/kmxservice/ai/privacy/PermissionData;)V
 -    .locals 1
 -
 -    :try_start_0
@@ -337,8 +337,9 @@ index 830778f3..d36ceab6 100644
 -    iget-object p0, p0, Lcom/samsung/android/kmxservice/ai/privacy/PermissionDataController;->mReadLock:Ljava/util/concurrent/locks/Lock;
 -
 -    invoke-interface {p0}, Ljava/util/concurrent/locks/Lock;->unlock()V
--
--    return-void
++    .locals 0
+ 
+     return-void
 -
 -    :catchall_0
 -    move-exception p1
@@ -348,11 +349,11 @@ index 830778f3..d36ceab6 100644
 -    invoke-interface {p0}, Ljava/util/concurrent/locks/Lock;->unlock()V
 -
 -    throw p1
--.end method
+ .end method
+ 
 -
--
--# virtual methods
--.method public blacklist flush()V
+ # virtual methods
+ .method public blacklist flush()V
 -    .locals 3
 -    .annotation system Ldalvik/annotation/Throws;
 -        value = {
@@ -729,7 +730,7 @@ index 830778f3..d36ceab6 100644
 -    if-le p1, p2, :cond_4
 -
 -    invoke-virtual {p0}, Lcom/samsung/android/kmxservice/ai/privacy/PermissionDataController;->flushAsync()V
-+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
++    .locals 0
  
 -    :cond_4
 -    :goto_0
