@@ -8,8 +8,8 @@ Subject: [PATCH] Introduce HideDeveloperStatusUtils
  .../HideDeveloperStatusUtils$Action.smali     | 152 +++++++
  .../unica/HideDeveloperStatusUtils.smali      | 371 ++++++++++++++++++
  3 files changed, 538 insertions(+)
- create mode 100644 smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
- create mode 100644 smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils.smali
+ create mode 100644 smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
+ create mode 100644 smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils.smali
 
 diff --git a/smali_classes3/android/provider/Settings$Global.smali b/smali_classes3/android/provider/Settings$Global.smali
 index 25bf82f9..e46b5e33 100644
@@ -37,11 +37,11 @@ index 25bf82f9..e46b5e33 100644
      sget-object v0, Landroid/provider/Settings$Global;->sNameValueCache:Landroid/provider/Settings$NameValueCache;
  
      invoke-virtual {v0, p0, p1, p2}, Landroid/provider/Settings$NameValueCache;->getStringForUser(Landroid/content/ContentResolver;Ljava/lang/String;I)Ljava/lang/String;
-diff --git a/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali b/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
+diff --git a/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali b/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
 new file mode 100644
 index 00000000..71db276a
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
++++ b/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils$Action.smali
 @@ -0,0 +1,152 @@
 +.class final enum Lio/mesalabs/unica/HideDeveloperStatusUtils$Action;
 +.super Ljava/lang/Enum;
@@ -195,11 +195,11 @@ index 00000000..71db276a
 +
 +    return-object v0
 +.end method
-diff --git a/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils.smali b/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils.smali
+diff --git a/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils.smali b/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils.smali
 new file mode 100644
 index 00000000..7126a143
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/HideDeveloperStatusUtils.smali
++++ b/smali_classes7/io/mesalabs/unica/HideDeveloperStatusUtils.smali
 @@ -0,0 +1,371 @@
 +.class public final Lio/mesalabs/unica/HideDeveloperStatusUtils;
 +.super Ljava/lang/Object;

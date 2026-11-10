@@ -4,36 +4,36 @@ Date: Fri, 24 Oct 2025 14:45:06 +0200
 Subject: [PATCH] Allow app downgrade
 
 ---
- .../server/pm/PackageManagerService.smali        | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ .../server/pm/PackageManagerService.smali     | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
 diff --git a/smali_classes2/com/android/server/pm/PackageManagerService.smali b/smali_classes2/com/android/server/pm/PackageManagerService.smali
-index 773266ffc..eb0880764 100644
 --- a/smali_classes2/com/android/server/pm/PackageManagerService.smali
 +++ b/smali_classes2/com/android/server/pm/PackageManagerService.smali
-@@ -22001,6 +22001,22 @@
+@@ -22231,4 +22231,24 @@
  
-     if-nez v0, :cond_b
+     if-nez v0, :cond_e
  
 +    iget-object v0, v2, Lcom/android/server/pm/InstallPackageHelper;->mContext:Landroid/content/Context;
 +
-+    invoke-virtual {v0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
++    move-object/from16 p0, v0
 +
-+    move-result-object v0
++    invoke-virtual/range {p0 .. p0}, Landroid/content/Context;->getContentResolver()Landroid/content/ContentResolver;
 +
-+    const-string v3, "unica_allow_downgrade"
++    move-result-object p0
 +
-+    const/4 v4, 0x0
++    const-string p1, "unica_allow_downgrade"
 +
-+    invoke-static {v0, v3, v4}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
++    const/16 p2, 0x0
++
++    invoke-static/range {p0 .. p2}, Landroid/provider/Settings$System;->getInt(Landroid/content/ContentResolver;Ljava/lang/String;I)I
 +
 +    move-result v0
 +
-+    if-nez v0, :cond_b
++    move-object/from16 p1, v5
 +
-     :try_start_3
-     invoke-interface {v10}, Lcom/android/server/pm/pkg/AndroidPackage;->getLongVersionCode()J
- 
++    if-nez v0, :cond_e
++
+     invoke-interface {v14}, Lcom/android/server/pm/pkg/AndroidPackage;->isDebuggable()Z
 -- 
 2.51.1
-

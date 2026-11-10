@@ -1,19 +1,19 @@
-From bf6684a234f5a032fb8c39ffaac3011c0cd7e4b5 Mon Sep 17 00:00:00 2001
+From 8c58e0280fd5ac2f589517f7203e2487380b6064 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
-Date: Fri, 24 Oct 2025 13:32:43 +0200
+Date: Tue, 15 Sep 2026 20:30:22 -0300
 Subject: [PATCH] Introduce FloatingFeatureHooks
 
 ---
- .../android/feature/SemFloatingFeature.smali  | 106 ++++-
+ .../android/feature/SemFloatingFeature.smali  |  56 ++-
  .../mesalabs/unica/FloatingFeatureHooks.smali | 394 ++++++++++++++++++
- 2 files changed, 485 insertions(+), 15 deletions(-)
- create mode 100644 smali_classes6/io/mesalabs/unica/FloatingFeatureHooks.smali
+ 2 files changed, 441 insertions(+), 9 deletions(-)
+ create mode 100644 smali_classes7/io/mesalabs/unica/FloatingFeatureHooks.smali
 
 diff --git a/smali_classes6/com/samsung/android/feature/SemFloatingFeature.smali b/smali_classes6/com/samsung/android/feature/SemFloatingFeature.smali
-index ef456f39..ef696b8e 100644
+index df11b72..17dbcab 100644
 --- a/smali_classes6/com/samsung/android/feature/SemFloatingFeature.smali
 +++ b/smali_classes6/com/samsung/android/feature/SemFloatingFeature.smali
-@@ -490,7 +490,7 @@
+@@ -486,7 +486,7 @@
  
  # virtual methods
  .method public whitelist getBoolean(Ljava/lang/String;)Z
@@ -22,7 +22,7 @@ index ef456f39..ef696b8e 100644
  
      const/4 v0, 0x0
  
-@@ -503,6 +503,19 @@
+@@ -499,6 +499,19 @@
      return v0
  
      :cond_0
@@ -42,7 +42,7 @@ index ef456f39..ef696b8e 100644
      iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
  
      invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -511,11 +524,11 @@
+@@ -507,11 +520,11 @@
  
      check-cast p0, Ljava/lang/String;
  
@@ -56,41 +56,7 @@ index ef456f39..ef696b8e 100644
      invoke-static {p0}, Ljava/lang/Boolean;->parseBoolean(Ljava/lang/String;)Z
  
      move-result p0
-@@ -557,6 +570,19 @@
-     return p0
- 
-     :cond_0
-+    invoke-static {p1}, Lio/mesalabs/unica/FloatingFeatureHooks;->onGetBoolean(Ljava/lang/String;)Ljava/lang/Boolean;
-+
-+    move-result-object v0
-+
-+    if-eqz v0, :cond_1
-+
-+    invoke-virtual {v0}, Ljava/lang/Boolean;->booleanValue()Z
-+
-+    move-result p0
-+
-+    return p0
-+
-+    :cond_1
-     iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
- 
-     invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -565,11 +591,11 @@
- 
-     check-cast p0, Ljava/lang/String;
- 
--    if-nez p0, :cond_1
-+    if-nez p0, :cond_2
- 
-     return p2
- 
--    :cond_1
-+    :cond_2
-     invoke-static {p0}, Ljava/lang/Boolean;->parseBoolean(Ljava/lang/String;)Z
- 
-     move-result p0
-@@ -578,7 +604,7 @@
+@@ -530,7 +543,7 @@
  .end method
  
  .method public whitelist getInt(Ljava/lang/String;)I
@@ -99,7 +65,7 @@ index ef456f39..ef696b8e 100644
  
      const/4 v0, -0x1
  
-@@ -591,6 +617,19 @@
+@@ -543,6 +556,19 @@
      return v0
  
      :cond_0
@@ -119,7 +85,7 @@ index ef456f39..ef696b8e 100644
      iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
  
      invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -599,11 +638,11 @@
+@@ -551,11 +577,11 @@
  
      check-cast p0, Ljava/lang/String;
  
@@ -133,41 +99,7 @@ index ef456f39..ef696b8e 100644
      :try_start_0
      invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
  
-@@ -661,6 +700,19 @@
-     return p2
- 
-     :cond_0
-+    invoke-static {p1}, Lio/mesalabs/unica/FloatingFeatureHooks;->onGetInt(Ljava/lang/String;)Ljava/lang/Integer;
-+
-+    move-result-object v0
-+
-+    if-eqz v0, :cond_1
-+
-+    invoke-virtual {v0}, Ljava/lang/Integer;->intValue()I
-+
-+    move-result p0
-+
-+    return p0
-+
-+    :cond_1
-     iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
- 
-     invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -669,11 +721,11 @@
- 
-     check-cast p0, Ljava/lang/String;
- 
--    if-nez p0, :cond_1
-+    if-nez p0, :cond_2
- 
-     return p2
- 
--    :cond_1
-+    :cond_2
-     :try_start_0
-     invoke-static {p0}, Ljava/lang/Integer;->parseInt(Ljava/lang/String;)I
- 
-@@ -722,7 +774,7 @@
+@@ -612,7 +638,7 @@
  .end method
  
  .method public whitelist getString(Ljava/lang/String;)Ljava/lang/String;
@@ -176,7 +108,7 @@ index ef456f39..ef696b8e 100644
  
      const-string v0, ""
  
-@@ -735,6 +787,17 @@
+@@ -625,6 +651,17 @@
      return-object v0
  
      :cond_0
@@ -194,7 +126,7 @@ index ef456f39..ef696b8e 100644
      iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
  
      invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -743,11 +806,12 @@
+@@ -633,11 +670,12 @@
  
      check-cast p0, Ljava/lang/String;
  
@@ -209,43 +141,11 @@ index ef456f39..ef696b8e 100644
      return-object p0
  .end method
  
-@@ -785,6 +849,17 @@
-     return-object p0
- 
-     :cond_0
-+    invoke-static {p1}, Lio/mesalabs/unica/FloatingFeatureHooks;->onGetString(Ljava/lang/String;)Ljava/lang/String;
-+
-+    move-result-object v0
-+
-+    if-eqz v0, :cond_1
-+
-+    move-object p0, v0
-+
-+    goto :goto_0
-+
-+    :cond_1
-     iget-object p0, p0, Lcom/samsung/android/feature/SemFloatingFeature;->mFeatureList:Ljava/util/Hashtable;
- 
-     invoke-virtual {p0, p1}, Ljava/util/Hashtable;->get(Ljava/lang/Object;)Ljava/lang/Object;
-@@ -793,10 +868,11 @@
- 
-     check-cast p0, Ljava/lang/String;
- 
--    if-nez p0, :cond_1
-+    if-nez p0, :cond_2
- 
-     return-object p2
- 
--    :cond_1
-+    :cond_2
-+    :goto_0
-     return-object p0
- .end method
-diff --git a/smali_classes6/io/mesalabs/unica/FloatingFeatureHooks.smali b/smali_classes6/io/mesalabs/unica/FloatingFeatureHooks.smali
+diff --git a/smali_classes7/io/mesalabs/unica/FloatingFeatureHooks.smali b/smali_classes7/io/mesalabs/unica/FloatingFeatureHooks.smali
 new file mode 100644
-index 00000000..c8afba57
+index 0000000..c8afba5
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/FloatingFeatureHooks.smali
++++ b/smali_classes7/io/mesalabs/unica/FloatingFeatureHooks.smali
 @@ -0,0 +1,394 @@
 +.class public final Lio/mesalabs/unica/FloatingFeatureHooks;
 +.super Ljava/lang/Object;

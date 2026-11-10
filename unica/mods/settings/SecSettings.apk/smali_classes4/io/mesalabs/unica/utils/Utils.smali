@@ -22,6 +22,60 @@
     return-void
 .end method
 
+.method public static createForceQuitDialog(Landroid/content/Context;)Landroidx/appcompat/app/AlertDialog;
+    .locals 4
+
+    new-instance v0, Landroidx/appcompat/app/AlertDialog$Builder;
+
+    invoke-direct {v0, p0}, Landroidx/appcompat/app/AlertDialog$Builder;-><init>(Landroid/content/Context;)V
+
+    const-string v1, "unica_dialog_reboot_title"
+
+    const-string v2, "string"
+
+    invoke-static {v2, v1}, Lio/mesalabs/unica/utils/Utils;->getResourceId(Ljava/lang/String;Ljava/lang/String;)I
+
+    move-result v1
+
+    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setTitle(I)V
+
+    const-string v1, "unica_dialog_reboot_msg"
+
+    invoke-static {v2, v1}, Lio/mesalabs/unica/utils/Utils;->getResourceId(Ljava/lang/String;Ljava/lang/String;)I
+
+    move-result v1
+
+    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setMessage(I)V
+
+    const-string v1, "unica_dialog_reboot_positive"
+
+    invoke-static {v2, v1}, Lio/mesalabs/unica/utils/Utils;->getResourceId(Ljava/lang/String;Ljava/lang/String;)I
+
+    move-result v1
+
+    new-instance v3, Lio/mesalabs/unica/utils/Utils$$ExternalSyntheticLambda0;
+
+    invoke-direct {v3, p0}, Lio/mesalabs/unica/utils/Utils$$ExternalSyntheticLambda0;-><init>(Landroid/content/Context;)V
+
+    invoke-virtual {v0, v1, v3}, Landroidx/appcompat/app/AlertDialog$Builder;->setPositiveButton(ILandroid/content/DialogInterface$OnClickListener;)V
+
+    const-string p0, "unica_dialog_reboot_negative"
+
+    invoke-static {v2, p0}, Lio/mesalabs/unica/utils/Utils;->getResourceId(Ljava/lang/String;Ljava/lang/String;)I
+
+    move-result p0
+
+    const/4 v1, 0x0
+
+    invoke-virtual {v0, p0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setNegativeButton(ILandroid/content/DialogInterface$OnClickListener;)V
+
+    invoke-virtual {v0}, Landroidx/appcompat/app/AlertDialog$Builder;->create()Landroidx/appcompat/app/AlertDialog;
+
+    move-result-object p0
+
+    return-object p0
+.end method
+
 .method public static createRebootDialog(Landroid/content/Context;)Landroidx/appcompat/app/AlertDialog;
     .locals 4
 
@@ -37,7 +91,7 @@
 
     move-result v1
 
-    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setTitle(I)Landroidx/appcompat/app/AlertDialog$Builder;
+    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setTitle(I)V
 
     const-string v1, "unica_dialog_reboot_msg"
 
@@ -45,7 +99,7 @@
 
     move-result v1
 
-    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setMessage(I)Landroidx/appcompat/app/AlertDialog$Builder;
+    invoke-virtual {v0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setMessage(I)V
 
     const-string v1, "unica_dialog_reboot_positive"
 
@@ -57,7 +111,7 @@
 
     invoke-direct {v3, p0}, Lio/mesalabs/unica/utils/Utils$$ExternalSyntheticLambda0;-><init>(Landroid/content/Context;)V
 
-    invoke-virtual {v0, v1, v3}, Landroidx/appcompat/app/AlertDialog$Builder;->setPositiveButton(ILandroid/content/DialogInterface$OnClickListener;)Landroidx/appcompat/app/AlertDialog$Builder;
+    invoke-virtual {v0, v1, v3}, Landroidx/appcompat/app/AlertDialog$Builder;->setPositiveButton(ILandroid/content/DialogInterface$OnClickListener;)V
 
     const-string p0, "unica_dialog_reboot_negative"
 
@@ -67,7 +121,7 @@
 
     const/4 v1, 0x0
 
-    invoke-virtual {v0, p0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setNegativeButton(ILandroid/content/DialogInterface$OnClickListener;)Landroidx/appcompat/app/AlertDialog$Builder;
+    invoke-virtual {v0, p0, v1}, Landroidx/appcompat/app/AlertDialog$Builder;->setNegativeButton(ILandroid/content/DialogInterface$OnClickListener;)V
 
     invoke-virtual {v0}, Landroidx/appcompat/app/AlertDialog$Builder;->create()Landroidx/appcompat/app/AlertDialog;
 
@@ -151,6 +205,17 @@
 
     sget-object v0, Lcom/android/settings/overlay/FeatureFactoryImpl;->_appContext:Lcom/android/settings/SettingsApplication;
 
+    if-nez v0, :cond_appctx_ok
+
+    new-instance v0, Ljava/lang/NullPointerException;
+
+    const-string v1, "FeatureFactoryImpl._appContext is null"
+
+    invoke-direct {v0, v1}, Ljava/lang/NullPointerException;-><init>(Ljava/lang/String;)V
+
+    throw v0
+
+    :cond_appctx_ok
     invoke-virtual {v0}, Landroid/content/Context;->getResources()Landroid/content/res/Resources;
 
     move-result-object v0
