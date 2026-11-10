@@ -64,6 +64,9 @@ ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib64/lib_nativeJni.dk.samsung.so" 0 0
 DELETE_FROM_WORK_DIR "system" "system/lib64/libdk_native_keymint.so"
 ADD_TO_WORK_DIR "r9qxxx" "system" "system/lib64/libdk_native_keymaster.so" 0 0 644 "u:object_r:system_lib_file:s0"
 DELETE_FROM_WORK_DIR "system" "system/lib64/vendor.samsung.hardware.keymint-V1-ndk.so"
+
+LOG_STEP_IN "- Adding a36xqnaxx SystemUI"
+ADD_TO_WORK_DIR "a36xqnaxx" "system_ext" "priv-app/SystemUI/SystemUI.apk" 0 0 644 "u:object_r:system_file:s0"
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Adding FM Radio libs"

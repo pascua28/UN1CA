@@ -302,7 +302,6 @@ if [[ "$SOURCE_FINGERPRINT_CONFIG_SENSOR" != "$TARGET_FINGERPRINT_CONFIG_SENSOR"
                 fi
 
                 ADD_TO_WORK_DIR "a36xqnaxx" "system" "system/priv-app/BiometricSetting/BiometricSetting.apk" 0 0 644 "u:object_r:system_file:s0"
-                ADD_TO_WORK_DIR "a36xqnaxx" "system_ext" "priv-app/SystemUI/SystemUI.apk" 0 0 644 "u:object_r:system_file:s0"
 
                 APPLY_PATCH "system" "system/framework/framework.jar" \
                     "$MODPATH/fingerprint/optical_fod/framework.jar/0001-Add-optical-FOD-support.patch"
