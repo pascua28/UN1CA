@@ -15,8 +15,8 @@ SMALI_PATCH "system" "system/framework/framework.jar" \
 APPLY_PATCH "system" "system/framework/services.jar" \
     "$MODPATH/services.jar/0001-Introduce-PlayIntegrityHooks.patch"
 
-if [ ! -f "$APKTOOL_DIR/system/framework/framework.jar/smali_classes6/io/mesalabs/unica/KeyboxImitationHooks.smali" ]; then
+if [ ! -f "$APKTOOL_DIR/system/framework/framework.jar/smali_classes7/io/mesalabs/unica/KeyboxImitationHooks.smali" ]; then
     SMALI_PATCH "system" "system/framework/framework.jar" \
-        "smali_classes6/io/mesalabs/unica/PlayIntegrityHooks.smali" "return" \
+        "smali_classes7/io/mesalabs/unica/PlayIntegrityHooks.smali" "return" \
         'shouldBlockKeyAttestation()Z' 'true'
 fi
