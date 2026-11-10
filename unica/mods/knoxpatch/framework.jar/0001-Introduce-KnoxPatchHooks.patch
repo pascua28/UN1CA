@@ -8,7 +8,7 @@ UN1CA: this patch is not complete! Please check unica/mods/knoxpatch/customize.s
  .../android/os/SystemProperties.smali         |  22 +-
  .../io/mesalabs/unica/KnoxPatchHooks.smali    | 269 ++++++++++++++++++
  2 files changed, 289 insertions(+), 2 deletions(-)
- create mode 100644 smali_classes6/io/mesalabs/unica/KnoxPatchHooks.smali
+ create mode 100644 smali_classes7/io/mesalabs/unica/KnoxPatchHooks.smali
 
 diff --git a/smali_classes3/android/os/SystemProperties.smali b/smali_classes3/android/os/SystemProperties.smali
 index 3af84b7b..7d5d50e4 100644
@@ -56,11 +56,11 @@ index 3af84b7b..7d5d50e4 100644
      invoke-static {p0, p1}, Landroid/os/SystemProperties;->native_get(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
  
      move-result-object p0
-diff --git a/smali_classes6/io/mesalabs/unica/KnoxPatchHooks.smali b/smali_classes6/io/mesalabs/unica/KnoxPatchHooks.smali
+diff --git a/smali_classes7/io/mesalabs/unica/KnoxPatchHooks.smali b/smali_classes7/io/mesalabs/unica/KnoxPatchHooks.smali
 new file mode 100644
 index 00000000..8b68148a
 --- /dev/null
-+++ b/smali_classes6/io/mesalabs/unica/KnoxPatchHooks.smali
++++ b/smali_classes7/io/mesalabs/unica/KnoxPatchHooks.smali
 @@ -0,0 +1,269 @@
 +.class public final Lio/mesalabs/unica/KnoxPatchHooks;
 +.super Ljava/lang/Object;

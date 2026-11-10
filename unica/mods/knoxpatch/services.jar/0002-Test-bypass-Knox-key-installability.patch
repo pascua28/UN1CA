@@ -1,0 +1,32 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: At30c <PabloAtsoc9993@outlook.com>
+Date: Tue, 22 Sep 2026 21:00:00 -0300
+Subject: [PATCH] knoxpatch: test bypass for Knox key installability gate
+
+Return success before the framework preflight invokes Keymaster attestation
+for KnoxTestKey. This is intentionally a diagnostic patch: it does not alter
+VaultKeeper, the TEE, or any hardware-backed key operation. If provisioning
+still fails later, the remaining failure is below the framework layer.
+---
+ .../server/knox/dar/DarManagerService.smali        | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/smali/com/android/server/knox/dar/DarManagerService.smali b/smali/com/android/server/knox/dar/DarManagerService.smali
+index e507b8f7..00000000 100644
+--- a/smali/com/android/server/knox/dar/DarManagerService.smali
++++ b/smali/com/android/server/knox/dar/DarManagerService.smali
+@@ -1708,6 +1708,10 @@
+ .end method
+ 
+ .method public final isKnoxKeyInstallable()Z
+     .locals 17
+ 
++    const/4 v0, 0x1
++
++    return v0
++
+     move-object/from16 v1, p0
+ 
+     const-string v0, "EC"
+-- 
+2.53.0
