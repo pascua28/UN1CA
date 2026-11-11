@@ -84,11 +84,11 @@ GET_GALAXY_STORE_DOWNLOAD_URL()
     ONEUI="$(GET_PROP "system" "ro.build.version.oneui")"
     SYSTEMID="$(date "+%s")"
 
-    if [ ! "$OS" ]; then
+    if [ ! "$OS" ] || [ "$OS" -gt "36" ]; then
         # Fallback to Android 16
         OS="36"
     fi
-    if [ ! "$ONEUI" ]; then
+    if [ ! "$ONEUI" ] || [ "$ONEUI" -gt "80000" ]; then
         # Fallback to One UI 8.0
         ONEUI="80000"
     fi
