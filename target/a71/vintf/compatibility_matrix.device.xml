@@ -1979,14 +1979,6 @@
         </interface>
     </hal>
     <hal format="aidl">
-        <name>vendor.samsung.hardware.snap</name>
-        <version>3</version>
-        <interface>
-            <name>ISehSnap</name>
-            <instance>default</instance>
-        </interface>
-    </hal>
-    <hal format="aidl">
         <name>vendor.samsung.hardware.sysinput</name>
         <version>2</version>
         <interface>
