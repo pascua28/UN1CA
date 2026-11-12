@@ -1,0 +1,5 @@
+id=wfd_smartview_fix
+name=Samsung Smart View Fix (32-bit WFD Stack)
+version=2.0
+author=Tava_Mon97
+description=Fixes Samsung Smart View / Wi-Fi Display by providing the matching 32-bit remotedisplay stack for hardware OMX encoder compatibility.
