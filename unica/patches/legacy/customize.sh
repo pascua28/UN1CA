@@ -417,6 +417,55 @@ if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
     unset KERNEL_VERSION LEGACY_KERNEL
 fi
 
+if [ "$TARGET_PLATFORM_SDK_VERSION" -lt 36 ]; then
+    EXTRACT_KERNEL_IMAGE
+    KERNEL_VERSION="$(grep -a -o -m 1 'Linux version [0-9]*\.[0-9]*' "$TMP_DIR/out/kernel" | awk '{print $3}')"
+
+    LEGACY_KERNEL=false
+    if [ -n "$KERNEL_VERSION" ]; then
+        if [ "${KERNEL_VERSION%%.*}" -lt 5 ] || \
+                { [[ "${KERNEL_VERSION%%.*}" == 5 ]] && [ "${KERNEL_VERSION#*.}" -le 4 ]; }; then
+            LEGACY_KERNEL=true
+        fi
+    fi
+
+    if $LEGACY_KERNEL; then
+        PATCHED=true
+    fi
+
+    CGROUPS="cpuset cpu cpuacct blkio memory"
+
+    for FILE in "$WORK_DIR/system/system/etc/cgroups.json" "$WORK_DIR/vendor/etc/cgroups.json"; do
+        [ -f "$FILE" ] || continue
+
+        LOG "- Patching cgroup v1 controllers"
+
+        jq --arg avail "$CGROUPS" '
+            ($avail | split(" ")) as $available |
+            (
+                .Cgroups |= map(
+                    if (.Controller as $c | $available | index($c)) == null then
+                        .Optional = true
+                    else .
+                    end
+                )
+            ) |
+            (
+                .Cgroups2.Controllers |= map(
+                    if (.Controller as $c | $available | index($c)) == null then
+                        .Optional = true
+                    else .
+                    end
+                )
+            )
+        ' "$FILE" > "$FILE.tmp"
+
+        mv "$FILE.tmp" "$FILE"
+    done
+
+    unset CGROUPS FILE
+fi
+
 # Ensure sbauth support in target firmware
 TARGET_FIRMWARE_PATH="$(cut -d "/" -f 1 -s <<< "$TARGET_FIRMWARE")_$(cut -d "/" -f 2 -s <<< "$TARGET_FIRMWARE")"
 if [ -f "$WORK_DIR/system/system/bin/sbauth" ] && \
