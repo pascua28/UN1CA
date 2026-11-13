@@ -875,8 +875,6 @@ if [[ "$SOURCE_WLAN_CONFIG_CONNECTION_PERSONALIZATION" != "$TARGET_WLAN_CONFIG_C
                 "$TARGET_WLAN_CONFIG_DYNAMIC_SWITCH"
         fi
 
-: <<'EOF'
-# TODO
         if ! $TARGET_WLAN_SUPPORT_APE_SERVICE; then
             APPLY_PATCH "system" "system/framework/semwifi-service.jar" \
                 "$MODPATH/wifi/ape_service/semwifi-service.jar/0001-Disable-APE_SERVICE-support.patch"
@@ -885,7 +883,6 @@ if [[ "$SOURCE_WLAN_CONFIG_CONNECTION_PERSONALIZATION" != "$TARGET_WLAN_CONFIG_C
             APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
                 "$MODPATH/wifi/ape_service/SecSettings.apk/0001-Disable-APE_SERVICE-support.patch"
         fi
-EOF
     else
         # TODO handle these conditions
         LOG_MISSING_PATCHES "SOURCE_WLAN_CONFIG_CONNECTION_PERSONALIZATION" "TARGET_WLAN_CONFIG_CONNECTION_PERSONALIZATION" || true

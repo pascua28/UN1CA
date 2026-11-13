@@ -1,54 +1,26 @@
-From a7afd4e82aa6669c0a99c1e17af7d323a8cf8f66 Mon Sep 17 00:00:00 2001
+From faa91531603e1e7c89f4caebbcb31404fd126005 Mon Sep 17 00:00:00 2001
 From: Salvo Giangreco <giangrecosalvo9@gmail.com>
 Date: Mon, 8 Sep 2025 22:22:19 +0200
 Subject: [PATCH] Disable APE_SERVICE support
 
 ---
- .../com/samsung/android/settings/wifi/WifiReset$1.smali       | 2 +-
- .../android/settings/wifi/advanced/WifiFeatureUtils.smali     | 2 +-
- .../settings/wifi/intelligent/ApePreferenceController.smali   | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ .../settings/wifi/develop/ApePreferenceController.smali       | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/smali_classes3/com/samsung/android/settings/wifi/WifiReset$1.smali b/smali_classes3/com/samsung/android/settings/wifi/WifiReset$1.smali
-index 0b51b9571..1c02e7239 100644
---- a/smali_classes3/com/samsung/android/settings/wifi/WifiReset$1.smali
-+++ b/smali_classes3/com/samsung/android/settings/wifi/WifiReset$1.smali
-@@ -274,7 +274,7 @@
+diff --git a/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali b/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
+index 173811c2..d029e735 100644
+--- a/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
++++ b/smali_classes4/com/samsung/android/settings/wifi/develop/ApePreferenceController.smali
+@@ -29,7 +29,7 @@
  
-     invoke-virtual {v1, v8, v7}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+     const-string v0, "sem_wifi_ape_enabled_labs"
  
--    sget-object v7, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
-+    sget-object v7, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
+-    const/4 v1, 0x1
++    const/4 v1, 0x0
  
-     const-string v9, "ape"
+     invoke-static {p0, v0, v1}, Landroid/provider/Settings$Global;->putInt(Landroid/content/ContentResolver;Ljava/lang/String;I)Z
  
-diff --git a/smali_classes3/com/samsung/android/settings/wifi/advanced/WifiFeatureUtils.smali b/smali_classes3/com/samsung/android/settings/wifi/advanced/WifiFeatureUtils.smali
-index 4d1461b34..7bd04eed5 100644
---- a/smali_classes3/com/samsung/android/settings/wifi/advanced/WifiFeatureUtils.smali
-+++ b/smali_classes3/com/samsung/android/settings/wifi/advanced/WifiFeatureUtils.smali
-@@ -171,7 +171,7 @@
- 
-     invoke-virtual {v0, v1, p0}, Ljava/util/HashMap;->put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
- 
--    sget-object p0, Ljava/lang/Boolean;->TRUE:Ljava/lang/Boolean;
-+    sget-object p0, Ljava/lang/Boolean;->FALSE:Ljava/lang/Boolean;
- 
-     const-string v1, "ape"
- 
-diff --git a/smali_classes3/com/samsung/android/settings/wifi/intelligent/ApePreferenceController.smali b/smali_classes3/com/samsung/android/settings/wifi/intelligent/ApePreferenceController.smali
-index 265a02314..04b5e0f09 100644
---- a/smali_classes3/com/samsung/android/settings/wifi/intelligent/ApePreferenceController.smali
-+++ b/smali_classes3/com/samsung/android/settings/wifi/intelligent/ApePreferenceController.smali
-@@ -4,7 +4,7 @@
- 
- 
- # static fields
--.field private static final SUPPORT_APE_SERVICE:Z = true
-+.field private static final SUPPORT_APE_SERVICE:Z = false
- 
- .field private static final TAG:Ljava/lang/String; = "ConfigureWifiSettings.Ape"
- 
-@@ -31,7 +31,7 @@
+@@ -57,7 +57,7 @@
  .method public getAvailabilityStatus()I
      .locals 0
  
@@ -58,5 +30,5 @@ index 265a02314..04b5e0f09 100644
      return p0
  .end method
 -- 
-2.51.0
+2.54.0
 
