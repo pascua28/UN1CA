@@ -27,7 +27,7 @@ system/lib64/vendor.samsung.hardware.security.hdcp.keyprovisioning@1.0.so
 
 # GameDriver
 SYSTEM_DEBLOAT+="
-system/priv-app/GameDriver-SM8450
+system/priv-app/GameDriver-SM8550
 "
 
 # Apps debloat
@@ -42,11 +42,35 @@ priv-app/HotwordEnrollmentXGoogleEx4HEXAGON
 
 # system_ext clean-up
 SYSTEM_EXT_DEBLOAT+="
+app/QCC
+bin/qccsyshal@1.2-service
+etc/init/vendor.qti.hardware.qccsyshal@1.2-service.rc
 etc/permissions/com.android.hotwordenrollment.common.util.xml
 etc/permissions/com.qti.location.sdk.xml
 etc/permissions/com.qualcomm.location.xml
 etc/permissions/privapp-permissions-com.qualcomm.location.xml
 framework/com.android.hotwordenrollment.common.util.jar
 framework/com.qti.location.sdk.jar
+framework/org.carconnectivity.android.digitalkey.rangingintent.jar
+framework/org.carconnectivity.android.digitalkey.secureelement.jar
+lib/libqcc.so
+lib/libqcc_file_agent_sys.so
+lib/libqccdme.so
+lib/libqccfileservice.so
+lib/vendor.qti.hardware.qccsyshal@1.0.so
+lib/vendor.qti.hardware.qccsyshal@1.1.so
+lib/vendor.qti.hardware.qccsyshal@1.2.so
+lib/vendor.qti.hardware.qccvndhal@1.0.so
+lib/vendor.qti.qccvndhal_aidl-V1-ndk.so
+lib64/libqcc.so
+lib64/libqcc_file_agent_sys.so
+lib64/libqccdme.so
+lib64/libqccfileservice.so
+lib64/vendor.qti.hardware.qccsyshal@1.0.so
+lib64/vendor.qti.hardware.qccsyshal@1.1.so
+lib64/vendor.qti.hardware.qccsyshal@1.2-halimpl.so
+lib64/vendor.qti.hardware.qccsyshal@1.2.so
+lib64/vendor.qti.hardware.qccvndhal@1.0.so
+lib64/vendor.qti.qccvndhal_aidl-V1-ndk.so
 priv-app/com.qualcomm.location
 "
