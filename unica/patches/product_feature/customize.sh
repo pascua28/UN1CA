@@ -238,9 +238,21 @@ fi
 # SEC_PRODUCT_FEATURE_COMMON_SUPPORT_HDR_EFFECT
 if $SOURCE_COMMON_SUPPORT_HDR_EFFECT; then
     if ! $TARGET_COMMON_SUPPORT_HDR_EFFECT; then
-        SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT" --delete
+        SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT" --delete || return 1
+
+        APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
+            "$MODPATH/mdnie/hdr/SecSettings.apk/0001-Disable-HDR-Settings.patch" || return 1
+        APPLY_PATCH "system" "system/priv-app/SettingsProvider/SettingsProvider.apk" \
+            "$MODPATH/mdnie/hdr/SettingsProvider.apk/0001-Disable-HDR-Settings.patch" || return 1
+    else
+        if [ ! "$(GET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT")" ]; then
+            SET_FLOATING_FEATURE_CONFIG "SEC_FLOATING_FEATURE_COMMON_SUPPORT_HDR_EFFECT" "TRUE"
+        fi
+    fi
+else
+    if $TARGET_COMMON_SUPPORT_HDR_EFFECT; then
         # TODO handle this condition
-        LOG_MISSING_PATCHES "TARGET_COMMON_SUPPORT_HDR_EFFECT"
+        LOG_MISSING_PATCHES "SOURCE_COMMON_SUPPORT_HDR_EFFECT" "TARGET_COMMON_SUPPORT_HDR_EFFECT"
     fi
 fi
 
