@@ -1,0 +1,4 @@
+id=boringssl_selftest
+name=Refine boringssl self-test handling
+author=Ats0c_
+description=Remove forced reboot_on_failure from boringssl self-test services. Retain tests while logging service names, binary details, and warning on missing binaries.
