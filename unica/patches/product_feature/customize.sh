@@ -925,6 +925,7 @@ else
         LOG_MISSING_PATCHES "SOURCE_WLAN_SUPPORT_MOBILEAP_11AX" "TARGET_WLAN_SUPPORT_MOBILEAP_11AX"
     fi
 fi
+EOF
 
 # SEC_PRODUCT_FEATURE_WLAN_SUPPORT_MOBILEAP_5G_BASEDON_COUNTRY
 if ! $SOURCE_WLAN_SUPPORT_MOBILEAP_5G_BASEDON_COUNTRY; then
@@ -1026,16 +1027,14 @@ fi
 # SEC_PRODUCT_FEATURE_WLAN_SUPPORT_MOBILEAP_POWER_SAVEMODE
 if $SOURCE_WLAN_SUPPORT_MOBILEAP_POWER_SAVEMODE; then
     if ! $TARGET_WLAN_SUPPORT_MOBILEAP_POWER_SAVEMODE; then
-        APPLY_PATCH "system" "system/framework/semwifi-service.jar" \
-            "$MODPATH/wifi/power_savemode/semwifi-service.jar/0001-Disable-MOBILEAP_POWER_SAVEMODE-support.patch"
         SMALI_PATCH "system" "system/framework/semwifi-service.jar" \
             "smali/com/samsung/android/server/wifi/ap/SemSoftApConfiguration.smali" "replaceall" \
             "SPF_POWER_SAVEMODE=true" \
             "SPF_POWER_SAVEMODE=false"
         SMALI_PATCH "system" "system/framework/semwifi-service.jar" \
-            "smali/com/samsung/android/server/wifi/ap/SemWifiApPowerSaveImpl\$\$ExternalSyntheticLambda0.smali" "remove"
-        SMALI_PATCH "system" "system/framework/semwifi-service.jar" \
-            "smali/com/samsung/android/server/wifi/ap/SemWifiApPowerSaveImpl\$\$ExternalSyntheticLambda1.smali" "remove"
+            "smali/com/samsung/android/server/wifi/ap/SemWifiApChipInfo\$SemWifiApChipSupportInfo.smali" "return" \
+            "isSupportedSoftApPowerSave()Z" \
+            "false"
     fi
 else
     if $TARGET_WLAN_SUPPORT_MOBILEAP_POWER_SAVEMODE; then
@@ -1162,7 +1161,6 @@ elif $SOURCE_WLAN_SUPPORT_WIFI_TO_CELLULAR && ! $TARGET_WLAN_SUPPORT_WIFI_TO_CEL
         "isWifiToCellularSupported()Z" \
         "false"
 fi
-EOF
 
 unset TARGET_FIRMWARE_PATH
 unset -f GET_FINGERPRINT_SENSOR_TYPE LOG_MISSING_PATCHES
