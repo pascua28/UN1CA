@@ -1004,6 +1004,10 @@ else
             "SPF_DualAp=false"
         APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
             "$MODPATH/wifi/dualap/SecSettings.apk/0001-Disable-Dual-band-AP.patch"
+        if ! $TARGET_WLAN_SUPPORT_80211AX_6GHZ; then
+            APPLY_PATCH "system" "system/priv-app/SecSettings/SecSettings.apk" \
+                "$MODPATH/wifi/dualap/SecSettings.apk/0001-Remove-6GHz-hotspot-band.patch"
+        fi
     fi
 fi
 
