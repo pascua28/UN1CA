@@ -48,6 +48,14 @@ DELETE_FROM_WORK_DIR "system" "system/lib64/vendor.samsung.hardware.keymint-V1-n
 
 LOG_STEP_IN "- Adding a36xqnaxx SystemUI"
 ADD_TO_WORK_DIR "a36xqnaxx" "system_ext" "priv-app/SystemUI/SystemUI.apk" 0 0 644 "u:object_r:system_file:s0"
+DECODE_APK "system_ext" "priv-app/SystemUI/SystemUI.apk"
+EVAL "cat > \"$APKTOOL_DIR/system_ext/priv-app//SystemUI/SystemUI.apk/res/drawable/rounded.xml\" <<'EOF'
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<vector android:height=\"8.0dp\" android:width=\"8.0dp\" android:viewportWidth=\"8.0\" android:viewportHeight=\"8.0\"
+  xmlns:android=\"http://schemas.android.com/apk/res/android\">
+    <path android:fillColor=\"#000000\" android:pathData=\"M8,0H0v8C0,3.6,3.6,0,8,0z\" />
+</vector>
+EOF"
 LOG_STEP_OUT
 
 LOG_STEP_IN "- Adding FM Radio libs"
