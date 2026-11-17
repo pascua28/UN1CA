@@ -32,6 +32,7 @@ system/hidden/INTERNAL_SDCARD/Music 0 0 755 capabilities=0x0
 system/hidden/INTERNAL_SDCARD/Music/Samsung 0 0 755 capabilities=0x0
 system/hidden/INTERNAL_SDCARD/Music/Samsung/Over_the_Horizon.m4a 0 0 644 capabilities=0x0
 system/lib64 0 0 755 capabilities=0x0
+system/lib64/libC2paDps.camera.samsung.so 0 0 644 capabilities=0x0
 system/lib64/libmediasndk.mediacore.samsung.so 0 0 644 capabilities=0x0
 system/lib64/libmediasndk.so 0 0 644 capabilities=0x0
 system/lib64/libmultisourceseparator.audio.samsung.so 0 0 644 capabilities=0x0

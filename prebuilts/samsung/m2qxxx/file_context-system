@@ -32,6 +32,7 @@
 /system/hidden/INTERNAL_SDCARD/Music/Samsung u:object_r:system_file:s0
 /system/hidden/INTERNAL_SDCARD/Music/Samsung/Over_the_Horizon\.m4a u:object_r:system_file:s0
 /system/lib64 u:object_r:system_lib_file:s0
+/system/lib64/libC2paDps\.camera\.samsung\.so u:object_r:system_lib_file:s0
 /system/lib64/libmediasndk\.mediacore\.samsung\.so u:object_r:system_lib_file:s0
 /system/lib64/libmediasndk\.so u:object_r:system_lib_file:s0
 /system/lib64/libmultisourceseparator\.audio\.samsung\.so u:object_r:system_lib_file:s0
