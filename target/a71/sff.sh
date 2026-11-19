@@ -5,3 +5,6 @@
 
 # Enable extra brightness feature
 SEC_FLOATING_FEATURE_LCD_SUPPORT_EXTRA_BRIGHTNESS=TRUE
+
+# Enable increased touch sensitivity feature
+SEC_FLOATING_FEATURE_SETTINGS_SUPPORT_TOUCH_SENSTIVITY_MATERIAL=TRUE
