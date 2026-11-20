@@ -1,0 +1,4 @@
+id=codecs
+name=Legacy codecs
+author=pascua28
+description=Removes legacy codecs to fix video playback on some apps
