@@ -136,6 +136,37 @@ system/priv-app/FacAtFunction
 system/priv-app/FactoryTestProvider
 "
 
+SYSTEM_DEBLOAT+="
+system/app/AirGlance
+system/app/LiveDrawing
+system/etc/default-permissions/default-permissions-com.samsung.android.service.aircommand.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.app.readingglass.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.service.aircommand.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.service.airviewdictionary.xml
+system/etc/public.libraries-smps.samsung.txt
+system/etc/sysconfig/airviewdictionaryservice.xml
+system/lib64/libsmpsft.smps.samsung.so
+system/media/audio/pensounds
+system/priv-app/AirCommand
+system/priv-app/AirReadingGlass
+system/priv-app/SmartEye
+"
+
+# Bixby
+SYSTEM_DEBLOAT+="
+system/priv-app/Bixby
+system/app/BixbyWakeup
+system/etc/preferred-apps/com.samsung.android.bixby.agent.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.bixby.agent.xml
+system/etc/permissions/privapp-permissions-com.samsung.android.bixby.wakeup.xml
+system/etc/permissions/signature-permissions-com.samsung.android.bixby.agent.xml
+"
+
+#AREmoji
+SYSTEM_DEBLOAT+="
+system/priv-app/AREmoji
+"
+
 # Language packs
 SYSTEM_DEBLOAT+="$(find "$WORK_DIR/system" -type d -name "*TTSVoice*" | sed "s|$WORK_DIR/system/||g")"
 
