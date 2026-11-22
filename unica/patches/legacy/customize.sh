@@ -673,11 +673,9 @@ if ! grep -q "\"version\": \"4\." "$WORK_DIR/vendor/etc/midas/midas_config.json"
         DELETE_FROM_WORK_DIR "vendor" "etc/midas"
         ADD_TO_WORK_DIR "a73xqxx" "vendor" \
             "etc/midas" 0 2000 755 "u:object_r:vendor_configs_file:s0"
-    fi
-    if [ "$TARGET_PLATFORM_SDK_VERSION" -lt "36" ]; then
-        PATCHED=true
-        ADD_TO_WORK_DIR "$SOURCE_FIRMWARE" "vendor" \
-            "etc/midas/midas_config.json" 0 0 644 "u:object_r:vendor_configs_file:s0"
+        if ! grep -qF "$TARGET_CODENAME" "$WORK_DIR/vendor/etc/midas/midas_config.json"; then
+            EVAL "sed -i 's/a73xq/$TARGET_CODENAME/g' \"$WORK_DIR/vendor/etc/midas/midas_config.json\""
+        fi
     fi
 fi
 
