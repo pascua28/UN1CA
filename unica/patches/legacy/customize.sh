@@ -735,3 +735,9 @@ fi
 
 unset PATCHED TARGET_FIRMWARE_PATH
 unset -f BACKPORT_SF_PROPS EXTRACT_KERNEL_IMAGE EXTRACT_KERNEL_MODULES
+
+if [[ "$TARGET_CODENAME" == "a71" ]]; then
+    LOG "- Patching SoundTrigger service"
+    APPLY_PATCH "system" "system/framework/services.jar" \
+        "$MODPATH/soundtrigger/services.jar/0001-Switch-to-FakeSoundTriggerHal.patch"
+fi

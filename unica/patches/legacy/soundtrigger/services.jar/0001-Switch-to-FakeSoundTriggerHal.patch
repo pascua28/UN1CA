@@ -1,0 +1,50 @@
+From b961155011b89a62224b20273469ff628121e054 Mon Sep 17 00:00:00 2001
+From: Samuel Pascua <pascua.samuel.14@gmail.com>
+Date: Tue, 24 Nov 2026 18:01:15 +0800
+Subject: [PATCH] Switch to FakeSoundTriggerHal
+
+Signed-off-by: Samuel Pascua <pascua.samuel.14@gmail.com>
+---
+ .../server/soundtrigger_middleware/FakeHalFactory.smali       | 3 ++-
+ .../SoundTriggerMiddlewareService$Lifecycle.smali             | 4 ++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/smali_classes2/com/android/server/soundtrigger_middleware/FakeHalFactory.smali b/smali_classes2/com/android/server/soundtrigger_middleware/FakeHalFactory.smali
+index dbbf4e46..08ea92a8 100644
+--- a/smali_classes2/com/android/server/soundtrigger_middleware/FakeHalFactory.smali
++++ b/smali_classes2/com/android/server/soundtrigger_middleware/FakeHalFactory.smali
+@@ -62,7 +62,8 @@
+ 
+     iput v5, v4, Landroid/media/soundtrigger/Properties;->version:I
+ 
+-    const-string v6, "00000001-0002-0003-0004-deadbeefabcd"
++    # BixbyWakeup checks for UUID starting 00000001 and rejects it. Fixes null pointer exception.
++    const-string v6, "00000002-0002-0003-0004-deadbeefabcd"
+ 
+     iput-object v6, v4, Landroid/media/soundtrigger/Properties;->uuid:Ljava/lang/String;
+ 
+diff --git a/smali_classes2/com/android/server/soundtrigger_middleware/SoundTriggerMiddlewareService$Lifecycle.smali b/smali_classes2/com/android/server/soundtrigger_middleware/SoundTriggerMiddlewareService$Lifecycle.smali
+index 4dae1357..7e97302f 100644
+--- a/smali_classes2/com/android/server/soundtrigger_middleware/SoundTriggerMiddlewareService$Lifecycle.smali
++++ b/smali_classes2/com/android/server/soundtrigger_middleware/SoundTriggerMiddlewareService$Lifecycle.smali
+@@ -47,7 +47,7 @@
+ 
+     invoke-static {}, Ljava/lang/invoke/VarHandle;->storeStoreFence()V
+ 
+-    filled-new-array {v0, v2}, [Lcom/android/server/soundtrigger_middleware/HalFactory;
++    filled-new-array {v2}, [Lcom/android/server/soundtrigger_middleware/HalFactory;
+ 
+     move-result-object v2
+ 
+@@ -73,7 +73,7 @@
+ 
+     new-instance v10, Ljava/util/ArrayList;
+ 
+-    const/4 v11, 0x2
++    const/4 v11, 0x1
+ 
+     invoke-direct {v10, v11}, Ljava/util/ArrayList;-><init>(I)V
+ 
+-- 
+2.54.0
+
