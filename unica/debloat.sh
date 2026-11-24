@@ -152,16 +152,6 @@ system/priv-app/AirReadingGlass
 system/priv-app/SmartEye
 "
 
-# Bixby
-SYSTEM_DEBLOAT+="
-system/priv-app/Bixby
-system/app/BixbyWakeup
-system/etc/preferred-apps/com.samsung.android.bixby.agent.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.bixby.agent.xml
-system/etc/permissions/privapp-permissions-com.samsung.android.bixby.wakeup.xml
-system/etc/permissions/signature-permissions-com.samsung.android.bixby.agent.xml
-"
-
 #AREmoji
 SYSTEM_DEBLOAT+="
 system/priv-app/AREmoji
